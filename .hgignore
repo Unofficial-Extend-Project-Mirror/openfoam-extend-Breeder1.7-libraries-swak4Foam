@@ -1,0 +1,16 @@
+syntax: glob
+
+*~
+*.dep
+*.output
+*.bak
+
+*.gz
+
+linux*Opt
+linux*Debug
+
+darwin*Opt
+darwin*Debug
+
+lnInclude

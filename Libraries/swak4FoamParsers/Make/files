@@ -1,0 +1,24 @@
+ExpressionResult.C
+
+FieldValueExpressionParser.yy
+PatchValueExpressionParser.yy
+SubsetValueExpressionParser.yy
+
+CommonValueExpressionDriver.C
+
+FieldValueExpressionLexer.ll
+FieldValueExpressionDriver.C
+
+PatchValueExpressionLexer.ll
+PatchValueExpressionDriver.C
+
+SubsetValueExpressionLexer.ll
+SubsetValueExpressionDriver.C
+
+CellSetValueExpressionDriver.C
+FaceSetValueExpressionDriver.C
+
+CellZoneValueExpressionDriver.C
+FaceZoneValueExpressionDriver.C
+
+LIB = $(FOAM_USER_LIBBIN)/libswak4FoamParsers
