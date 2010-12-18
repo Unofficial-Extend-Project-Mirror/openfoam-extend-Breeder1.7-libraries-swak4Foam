@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: FaceZoneValueExpressionDriverI.H,v e1434e33b66d 2010-08-30 22:42:27Z bgschaid $ 
+ ICE Revision: $Id: FaceZoneValueExpressionDriverI.H,v 47e5b59b8aa6 2010-10-24 12:33:56Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -54,7 +54,8 @@ namespace Foam {
 
     const fvMesh &FaceZoneValueExpressionDriver::mesh() const
     {
-        return dynamicCast<const fvMesh&>(faceZone_.zoneMesh().mesh());
+        //        return dynamicCast<const fvMesh&>(faceZone_.zoneMesh().mesh()); // doesn't work with gcc 4.2
+        return dynamic_cast<const fvMesh&>(faceZone_.zoneMesh().mesh());
     }
 
 }

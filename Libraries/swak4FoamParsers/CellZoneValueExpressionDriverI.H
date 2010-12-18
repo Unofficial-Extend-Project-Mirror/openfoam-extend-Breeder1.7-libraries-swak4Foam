@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: CellZoneValueExpressionDriverI.H,v 12384f19574a 2010-08-25 21:23:31Z bgschaid $ 
+ ICE Revision: $Id: CellZoneValueExpressionDriverI.H,v 47e5b59b8aa6 2010-10-24 12:33:56Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -54,7 +54,8 @@ namespace Foam {
 
     const fvMesh &CellZoneValueExpressionDriver::mesh() const
     {
-        return dynamicCast<const fvMesh&>(cellZone_.zoneMesh().mesh());
+        //        return dynamicCast<const fvMesh&>(cellZone_.zoneMesh().mesh()); // doesn't work with gcc 4.2
+        return dynamic_cast<const fvMesh&>(cellZone_.zoneMesh().mesh());
     }
 
 }

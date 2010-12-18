@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: clearExpressionField.C,v 0ff669faec70 2010-08-09 22:35:09Z bgschaid $ 
+//  OF-extend Revision: $Id: clearExpressionField.C,v 47e5b59b8aa6 2010-10-24 12:33:56Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -64,7 +64,8 @@ void Foam::clearExpressionField::execute()
     forAll(fol,i) {
         if(isA<expressionFieldFunctionObject>(fol[i])) {
             expressionField &ef=const_cast<expressionField &>(
-                dynamicCast<const expressionFieldFunctionObject&>(fol[i]).outputFilter()
+                //                dynamicCast<const expressionFieldFunctionObject&>(fol[i]).outputFilter() // doesn't work with gcc 4.2
+                dynamic_cast<const expressionFieldFunctionObject&>(fol[i]).outputFilter()
             );
 
             if(ef.name()==name_) {

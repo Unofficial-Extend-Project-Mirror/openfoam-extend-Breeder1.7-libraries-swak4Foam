@@ -28,22 +28,10 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: CommonValueExpressionDriver.C,v 2563e5544eac 2010-09-09 07:36:18Z bgschaid $ 
+ ICE Revision: $Id: CommonValueExpressionDriver.C,v d336629aa26b 2010-12-14 19:43:35Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "CommonValueExpressionDriver.H"
-
-#include "FieldValueExpressionDriver.H"
-
-#include "PatchValueExpressionDriver.H"
-
-#include "CellZoneValueExpressionDriver.H"
-
-#include "CellSetValueExpressionDriver.H"
-
-#include "FaceZoneValueExpressionDriver.H"
-
-#include "FaceSetValueExpressionDriver.H"
 
 #include "Random.H"
 
@@ -54,6 +42,7 @@ namespace Foam {
 
 defineTypeNameAndDebug(CommonValueExpressionDriver,0);
 defineRunTimeSelectionTable(CommonValueExpressionDriver, dictionary);
+defineRunTimeSelectionTable(CommonValueExpressionDriver, idName);
 
     // Currently not working
 bool CommonValueExpressionDriver::cacheSets_=true;
@@ -68,7 +57,7 @@ CommonValueExpressionDriver::CommonValueExpressionDriver(
     const CommonValueExpressionDriver& orig
 )
 :
-    variableString_(""),
+    variableStrings_(orig.variableStrings_),
     result_(orig.result_),
     variables_(orig.variables_),
     lines_(orig.lines_),
@@ -85,7 +74,7 @@ CommonValueExpressionDriver::CommonValueExpressionDriver(
 
 CommonValueExpressionDriver::CommonValueExpressionDriver(const dictionary& dict)
 :
-    variableString_(dict.lookupOrDefault("variables",string(""))),
+    variableStrings_(readVariableStrings(dict)),
     content_(""),
     trace_scanning_ (dict.lookupOrDefault("traceScanning",false)),
     trace_parsing_ (dict.lookupOrDefault("traceParsing",false))
@@ -103,7 +92,6 @@ CommonValueExpressionDriver::CommonValueExpressionDriver(const dictionary& dict)
     if(dict.found("timelines")) {
         readLines(dict.lookup("timelines"));
     }
-    //    addVariables(variableString_);
 }
 
 CommonValueExpressionDriver::CommonValueExpressionDriver(
@@ -112,7 +100,7 @@ CommonValueExpressionDriver::CommonValueExpressionDriver(
     bool searchOnDisc
 )
 :
-    variableString_(""),
+    variableStrings_(),
     content_(""),
     trace_scanning_ (false),
     trace_parsing_ (false)
@@ -171,6 +159,39 @@ autoPtr<CommonValueExpressionDriver> CommonValueExpressionDriver::New
     );
 }
 
+autoPtr<CommonValueExpressionDriver> CommonValueExpressionDriver::New
+(
+    const word& driverType,
+    const word& id,
+    const fvMesh& mesh
+)
+{
+    idNameConstructorTable::iterator cstrIter =
+        idNameConstructorTablePtr_->find(driverType);
+
+    if (cstrIter == idNameConstructorTablePtr_->end())
+    {
+        FatalErrorIn
+        (
+            "autoPtr<CommonValueExpressionDriver> CommonValueExpressionDriver::New"
+        )   << "Unknown  CommonValueExpressionDriver type " << driverType
+            << endl << endl
+            << "Valid valueTypes are :" << endl
+	  //            << idNameConstructorTablePtr_->sortedToc() // does not work in 1.6
+            << idNameConstructorTablePtr_->toc()
+            << exit(FatalError);
+    }
+
+    if(debug) {
+        Info << "Creating driver of type " << driverType << endl;
+    }
+
+    return autoPtr<CommonValueExpressionDriver>
+    (
+        cstrIter()(id,mesh)
+    );
+}
+
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
 CommonValueExpressionDriver::~CommonValueExpressionDriver()
@@ -178,6 +199,64 @@ CommonValueExpressionDriver::~CommonValueExpressionDriver()
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
+
+stringList CommonValueExpressionDriver::readVariableStrings(const dictionary &dict)
+{
+    if(!dict.found("variables")) {
+        return stringList();
+    }
+    ITstream data(dict.lookup("variables"));
+    token nextToken;
+    data.read(nextToken);
+    if(nextToken.isString()) {
+        data.rewind();
+        return stringList(1,string(data));
+    } else if(
+        nextToken.type()==token::PUNCTUATION
+        &&
+        nextToken.pToken()==token::BEGIN_LIST
+    ) {
+        data.rewind();
+        return stringList(data);
+    } if(nextToken.isLabel()) {
+        token anotherToken;
+        data.read(anotherToken);
+        if(
+            anotherToken.type()==token::PUNCTUATION
+            &&
+            anotherToken.pToken()==token::BEGIN_LIST
+        ) {
+            data.rewind();
+            return stringList(data);
+        }
+    }
+
+    FatalErrorIn("CommonValueExpressionDriver::readVariableStrings(const dictionary &dict)")
+        << " Entry 'variables' must either be a string or a list of strings"
+            << endl
+            << abort(FatalError);
+    
+    return stringList();
+}
+
+void CommonValueExpressionDriver::setVariableStrings(const dictionary &dict)
+{
+    variableStrings_=readVariableStrings(dict);
+}
+
+Ostream &CommonValueExpressionDriver::writeVariableStrings(Ostream &out) const
+{
+    if(variableStrings_.size()==0) {
+        out << string("");
+    } else if(variableStrings_.size()==1) {
+        out << variableStrings_[0];
+    } else {
+        out << variableStrings_;
+    }
+
+    return out;
+}
+
 
 word CommonValueExpressionDriver::getResultType()
 {
@@ -347,12 +426,16 @@ scalarField *CommonValueExpressionDriver::makeGaussRandomField(label seed)
     return result;
 }
 
+bool CommonValueExpressionDriver::update()
+{
+    return true;
+}
+
 void CommonValueExpressionDriver::clearVariables()
 {
+    this->update();
     variables_.clear();
-    if(variableString_!="") {
-        addVariables(variableString_,false);
-    }
+    addVariables(variableStrings_,false);
 }
 
 void CommonValueExpressionDriver::evaluateVariable(const word &name,const string &expr)
@@ -394,106 +477,31 @@ void CommonValueExpressionDriver::evaluateVariableRemote(const string &remoteExp
     const fvMesh *pRegion=&(this->mesh());
 
     if(regionName!="") {
-        pRegion=&(dynamicCast<const fvMesh&>(
+        //        pRegion=&(dynamicCast<const fvMesh&>( // doesn't work with gcc 4.2
+        pRegion=&(dynamic_cast<const fvMesh&>(
                       pRegion->time().lookupObject<objectRegistry>(regionName))
         );
     }
 
     const fvMesh &region=*pRegion;
 
-    if(type=="patch") {
-        label patchI=region.boundaryMesh().findPatchID(id);
-        if(patchI<0) {
-            FatalErrorIn("CommonValueExpressionDriver::evaluateVariableRemote(const word &patchName,const word &name,const string &expr)")
-                << " This mesh does not have a patch named " << id
-                    << endl
-                    << abort(FatalError);
-        }
-        const fvPatch &otherPatch=region.boundary()[patchI];
-        PatchValueExpressionDriver otherDriver(otherPatch);
-        otherDriver.parse(expr);
-        variables_.insert(name,otherDriver.getUniform(this->size(),false));
-    } else if(type=="internalField") {
-        FieldValueExpressionDriver fieldDriver(
-            region,
-            false,
-            true,
-            false
-        );
-        fieldDriver.parse(expr);
+    autoPtr<CommonValueExpressionDriver> otherDriver=CommonValueExpressionDriver::New(
+        type,
+        id,
+        region
+    );
 
-        ExpressionResult result;
+    otherDriver->parse(expr);
+    variables_.insert(name,otherDriver->getUniform(this->size(),false));
+}
 
-        if(fieldDriver.resultIsVector()) {
-            result.setResult(
-                fieldDriver.getVector().internalField()
-            );            
-        } else if(fieldDriver.resultIsScalar()) {
-            result.setResult(
-                fieldDriver.getScalar().internalField()
-            );            
-        } else {
-            WarningIn("CommonValueExpressionDriver::evaluateVariableRemote")
-                << "Expression '" << expr 
-                    << "' evaluated to an unsupported type"
-                    << endl;
-        }
-        variables_.insert(name,result.getUniform(this->size(),false));
-    } else if(type=="cellSet") {
-        cellSet otherSet(
-            region,
-            id,
-            IOobject::MUST_READ
-        );
-        CellSetValueExpressionDriver otherDriver(
-            getSet<cellSet>(
-                region,
-                id
-            )()
-        );
-        otherDriver.parse(expr);
-        variables_.insert(name,otherDriver.getUniform(this->size(),false)); 
-    } else if(type=="cellZone") {
-        label zoneI=region.cellZones().findZoneID(id);
-        if(zoneI<0) {
-            FatalErrorIn("CommonValueExpressionDriver::evaluateVariableRemote(const word &patchName,const word &name,const string &expr)")
-                << " This mesh does not have a cellZone named " << id
-                    << endl
-                    << abort(FatalError);
-        }
-        const cellZone &otherZone=region.cellZones()[zoneI];
-        CellZoneValueExpressionDriver otherDriver(otherZone);
-        otherDriver.parse(expr);
-        variables_.insert(name,otherDriver.getUniform(this->size(),false));        
-    } else if(type=="faceSet") {
-        FaceSetValueExpressionDriver otherDriver(
-                getSet<faceSet>(
-                    region,
-                    id
-                )(),
-                true,
-                false
-            );
-        otherDriver.parse(expr);
-        variables_.insert(name,otherDriver.getUniform(this->size(),false)); 
-    } else if(type=="faceZone") {
-        label zoneI=region.faceZones().findZoneID(id);
-        if(zoneI<0) {
-            FatalErrorIn("CommonValueExpressionDriver::evaluateVariableRemote(const word &patchName,const word &name,const string &expr)")
-                << " This mesh does not have a faceZone named " << id
-                    << endl
-                    << abort(FatalError);
-        }
-        const faceZone &otherZone=region.faceZones()[zoneI];
-        FaceZoneValueExpressionDriver otherDriver(otherZone,true,false);
-        otherDriver.parse(expr);
-        variables_.insert(name,otherDriver.getUniform(this->size(),false));        
-    } else {
-        FatalErrorIn("CommonValueExpressionDriver::evaluateVariableRemote")
-            << "The type '" << type << "' is not implemented. " 
-                << "Valid types are 'patch', 'internalField', 'cellSet', 'cellZone', 'faceSet' and 'faceZone'"
-                << endl
-                << abort(FatalError);
+void CommonValueExpressionDriver::addVariables(const stringList &exprList,bool clear)
+{
+    if(clear) {
+        clearVariables();
+    }
+    forAll(exprList,i) {
+        addVariables(exprList[i],false);
     }
 }
 
@@ -589,7 +597,8 @@ const fvMesh &CommonValueExpressionDriver::regionMesh
         Info << "Using mesh " << dict.lookup("region")  << endl;
     }
     
-    return dynamicCast<const fvMesh&>(
+    //     return dynamicCast<const fvMesh&>( // soesn't work with gcc 3.2
+    return dynamic_cast<const fvMesh&>(
         mesh.time().lookupObject<objectRegistry>(
             dict.lookup("region")
         )

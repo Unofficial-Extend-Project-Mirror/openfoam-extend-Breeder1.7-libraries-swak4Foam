@@ -37,7 +37,7 @@ Description
 SourceFiles
     groovyBCFvPatchField.C
 
- ICE Revision: $Id: groovyBCFvPatchField.H,v 4c8bbdfbaac6 2010-07-18 21:53:59Z bgschaid $ 
+ ICE Revision: $Id: groovyBCFvPatchField.H,v 032b759f880d 2010-12-13 20:53:59Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef groovyBCFvPatchField_H
@@ -70,7 +70,6 @@ protected:
     string valueExpression_;
     string gradientExpression_;
     string fractionExpression_;
-    string variables_;
 
     PatchValueExpressionDriver driver_;
 

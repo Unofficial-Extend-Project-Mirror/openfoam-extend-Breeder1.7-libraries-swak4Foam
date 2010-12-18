@@ -37,7 +37,7 @@ SourceFiles
     PatchValueExpressionDriverI.H
     PatchValueExpressionDriver.C
 
- ICE Revision: $Id: PatchValueExpressionDriver.H,v 40e0f671769a 2010-08-29 19:13:04Z bgschaid $ 
+ ICE Revision: $Id: PatchValueExpressionDriver.H,v f8e5fd494c2b 2010-12-13 23:21:54Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef PatchValueExpressionDriver_H
@@ -115,6 +115,9 @@ public:
     //- Construct from and an old Version
     PatchValueExpressionDriver(const fvPatch& patch_,const PatchValueExpressionDriver& old);
 
+    //- Construct from an id
+    PatchValueExpressionDriver(const word& id,const fvMesh&mesh);
+    
     //- Copy construct
     PatchValueExpressionDriver(const PatchValueExpressionDriver&);
 

@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: patchExpressionFunctionObject.C,v dcffe75841c2 2010-08-04 12:10:31Z bgschaid $ 
+//  OF-extend Revision: $Id: patchExpressionFunctionObject.C,v 21790cde520b 2010-12-13 22:43:08Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -56,7 +56,7 @@ patchExpressionFunctionObject::patchExpressionFunctionObject
 :
     patchFunctionObject(name,t,dict),
     expression_(dict.lookup("expression")),
-    variables_(dict.lookupOrDefault("variables",string(""))),
+    variables_(CommonValueExpressionDriver::readVariableStrings(dict)),
     accumulations_(dict.lookup("accumulations"))
 {
 }

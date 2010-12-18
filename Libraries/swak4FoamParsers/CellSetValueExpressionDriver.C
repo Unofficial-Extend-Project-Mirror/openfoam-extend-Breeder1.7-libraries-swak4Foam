@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: CellSetValueExpressionDriver.C,v 5bae5beac9fd 2010-09-08 22:18:36Z bgschaid $ 
+ ICE Revision: $Id: CellSetValueExpressionDriver.C,v d336629aa26b 2010-12-14 19:43:35Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "CellSetValueExpressionDriver.H"
@@ -40,7 +40,9 @@ namespace Foam {
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
 defineTypeNameAndDebug(CellSetValueExpressionDriver, 0);
+
 addNamedToRunTimeSelectionTable(CommonValueExpressionDriver, CellSetValueExpressionDriver, dictionary, cellSet);
+addNamedToRunTimeSelectionTable(CommonValueExpressionDriver, CellSetValueExpressionDriver, idName, cellSet);
 
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
@@ -53,7 +55,8 @@ addNamedToRunTimeSelectionTable(CommonValueExpressionDriver, CellSetValueExpress
 :
         SubsetValueExpressionDriver(orig),
         cellSet_(
-            dynamicCast<const fvMesh&>(set.db()),
+            dynamic_cast<const fvMesh&>(set.db()),
+            //            dynamicCast<const fvMesh&>(set.db()), // doesn't work with f++ 4.2
             //            set.name()+"_copy",
             set.name(),
             set
@@ -64,12 +67,27 @@ CellSetValueExpressionDriver::CellSetValueExpressionDriver(const cellSet &set)
 :
     SubsetValueExpressionDriver(),
     cellSet_(
-            dynamicCast<const fvMesh&>(set.db()),
+            dynamic_cast<const fvMesh&>(set.db()),
+            //            dynamicCast<const fvMesh&>(set.db()), // doesn't work with gcc 4.2
             //            set.name()+"_copy",
             set.name(),
             set
     )
 {}
+
+CellSetValueExpressionDriver::CellSetValueExpressionDriver(const word& id,const fvMesh&mesh)
+ :
+    SubsetValueExpressionDriver(),
+    cellSet_(
+        mesh,
+        id,
+        getSet<cellSet>(
+            mesh,
+            id
+        )()
+    )
+{
+}
 
 CellSetValueExpressionDriver::CellSetValueExpressionDriver(const dictionary& dict,const fvMesh&mesh)
  :

@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: clearExpressionFieldFunctionObject.H,v 0ff669faec70 2010-08-09 22:35:09Z bgschaid $ 
+//  OF-extend Revision: $Id$ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox

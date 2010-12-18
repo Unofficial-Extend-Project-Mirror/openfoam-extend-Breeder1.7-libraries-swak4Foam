@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: SubsetValueExpressionDriver.C,v 734e8d84a099 2010-09-07 09:39:10Z mmataln $ 
+ ICE Revision: $Id$ 
 \*---------------------------------------------------------------------------*/
 
 #include "SubsetValueExpressionDriver.H"

@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: PatchValueExpressionDriver.C,v 734e8d84a099 2010-09-07 09:39:10Z mmataln $ 
+ ICE Revision: $Id: PatchValueExpressionDriver.C,v f8e5fd494c2b 2010-12-13 23:21:54Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "PatchValueExpressionDriver.H"
@@ -47,6 +47,7 @@ namespace Foam {
 
 defineTypeNameAndDebug(PatchValueExpressionDriver, 0);
 addNamedToRunTimeSelectionTable(CommonValueExpressionDriver, PatchValueExpressionDriver, dictionary, patch);
+addNamedToRunTimeSelectionTable(CommonValueExpressionDriver, PatchValueExpressionDriver, idName, patch);
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
@@ -90,6 +91,20 @@ PatchValueExpressionDriver::PatchValueExpressionDriver(const dictionary& dict,co
                 dict.lookup(
                     "patchName"
                 )
+            )
+        ]
+    )
+{
+}
+
+PatchValueExpressionDriver::PatchValueExpressionDriver(const word& id,const fvMesh&mesh)
+ :
+    CommonValueExpressionDriver(),
+    patch_(
+        mesh.boundary()[
+            getPatchID(
+                mesh,
+                id
             )
         ]
     )

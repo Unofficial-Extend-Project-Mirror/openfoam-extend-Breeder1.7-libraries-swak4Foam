@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: manipulateFieldFunctionObject.C,v 7e5534096377 2010-08-09 21:47:33Z bgschaid $ 
+//  OF-extend Revision: $Id$ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox

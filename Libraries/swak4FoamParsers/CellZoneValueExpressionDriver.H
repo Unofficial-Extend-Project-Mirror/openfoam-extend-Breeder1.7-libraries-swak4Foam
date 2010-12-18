@@ -37,7 +37,7 @@ SourceFiles
     CellZoneValueExpressionDriverI.H
     CellZoneValueExpressionDriver.C
 
- ICE Revision: $Id: CellZoneValueExpressionDriver.H,v aa923b412441 2010-08-31 18:33:24Z bgschaid $ 
+ ICE Revision: $Id: CellZoneValueExpressionDriver.H,v dfe8d8ef9202 2010-12-14 18:50:11Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef CellZoneValueExpressionDriver_H
@@ -80,6 +80,9 @@ public:
     //- Construct from a dictionary
     CellZoneValueExpressionDriver(const dictionary& dict,const fvMesh&mesh);
     
+    //- Construct from an id
+    CellZoneValueExpressionDriver(const word& id,const fvMesh&mesh);
+    
     //- Copy construct
     CellZoneValueExpressionDriver(const cellZone &,const CellZoneValueExpressionDriver&);
 
@@ -106,6 +109,8 @@ public:
 
 //     template<class Type>
 //     Field<Type> *getField(const string &name);
+
+    virtual bool isCell() { return true; }
 
     virtual Field<scalar> *getScalarField(const string &name);
 

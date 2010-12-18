@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: patchExpressionFunctionObject.H,v 43de13bf3767 2010-08-03 18:49:05Z bgschaid $ 
+//  OF-extend Revision: $Id: patchExpressionFunctionObject.H,v 21790cde520b 2010-12-13 22:43:08Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -71,7 +71,7 @@ class patchExpressionFunctionObject
     string expression_;
 
     //- expressions for variables
-    string variables_;
+    stringList variables_;
 
     //- list with the accumulations of evaluated expression
     wordList accumulations_;

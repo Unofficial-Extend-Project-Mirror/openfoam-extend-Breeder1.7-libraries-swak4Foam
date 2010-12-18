@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: FaceSetValueExpressionDriver.C,v 400ee3c2db7f 2010-09-08 19:41:05Z bgschaid $ 
+ ICE Revision: $Id: FaceSetValueExpressionDriver.C,v d336629aa26b 2010-12-14 19:43:35Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "FaceSetValueExpressionDriver.H"
@@ -43,7 +43,9 @@ namespace Foam {
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
 defineTypeNameAndDebug(FaceSetValueExpressionDriver, 0);
+
 addNamedToRunTimeSelectionTable(CommonValueExpressionDriver, FaceSetValueExpressionDriver, dictionary, faceSet);
+addNamedToRunTimeSelectionTable(CommonValueExpressionDriver, FaceSetValueExpressionDriver, idName, faceSet);
 
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
@@ -56,7 +58,8 @@ addNamedToRunTimeSelectionTable(CommonValueExpressionDriver, FaceSetValueExpress
 :
         SubsetValueExpressionDriver(orig),
         faceSet_(
-            dynamicCast<const fvMesh&>(set.db()),
+            //            dynamicCast<const fvMesh&>(set.db()), // doesn't work with gcc 4.2
+            dynamic_cast<const fvMesh&>(set.db()),
             //            set.name()+"_copy",
             set.name(),
             set
@@ -71,7 +74,8 @@ FaceSetValueExpressionDriver::FaceSetValueExpressionDriver(
 :
     SubsetValueExpressionDriver(autoInterpolate,warnAutoInterpolate),
     faceSet_(
-            dynamicCast<const fvMesh&>(set.db()),
+        //            dynamicCast<const fvMesh&>(set.db()), // doesn't work with gcc 4.2
+            dynamic_cast<const fvMesh&>(set.db()),
             //            set.name()+"_copy",
             set.name(),
             set
@@ -91,6 +95,21 @@ FaceSetValueExpressionDriver::FaceSetValueExpressionDriver(const dictionary& dic
     )
 {
 }
+
+FaceSetValueExpressionDriver::FaceSetValueExpressionDriver(const word& id,const fvMesh&mesh)
+ :
+    SubsetValueExpressionDriver(true,false),
+    faceSet_(
+        mesh,
+        id,
+        getSet<faceSet>(
+            mesh,
+            id
+        )()
+    )
+{
+}
+
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
 FaceSetValueExpressionDriver::~FaceSetValueExpressionDriver()

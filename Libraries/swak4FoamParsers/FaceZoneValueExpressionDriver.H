@@ -37,7 +37,7 @@ SourceFiles
     FaceZoneValueExpressionDriverI.H
     FaceZoneValueExpressionDriver.C
 
- ICE Revision: $Id: FaceZoneValueExpressionDriver.H,v aa923b412441 2010-08-31 18:33:24Z bgschaid $ 
+ ICE Revision: $Id: FaceZoneValueExpressionDriver.H,v dfe8d8ef9202 2010-12-14 18:50:11Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef FaceZoneValueExpressionDriver_H
@@ -84,6 +84,9 @@ public:
     //- Construct from a dictionary
     FaceZoneValueExpressionDriver(const dictionary& dict,const fvMesh&mesh);
     
+    //- Construct from an id
+    FaceZoneValueExpressionDriver(const word& id,const fvMesh&mesh);
+    
     //- Copy construct
     FaceZoneValueExpressionDriver(const faceZone &,const FaceZoneValueExpressionDriver&);
 
@@ -110,6 +113,8 @@ public:
 
 //     template<class Type>
 //     Field<Type> *getField(const string &name);
+
+    virtual bool isCell() { return false; }
 
     virtual Field<scalar> *getScalarField(const string &name);
 

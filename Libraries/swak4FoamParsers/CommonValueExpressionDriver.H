@@ -37,7 +37,7 @@ SourceFiles
     CommonValueExpressionDriverI.H
     CommonValueExpressionDriver.C
 
- ICE Revision: $Id: CommonValueExpressionDriver.H,v 400ee3c2db7f 2010-09-08 19:41:05Z bgschaid $ 
+ ICE Revision: $Id: CommonValueExpressionDriver.H,v 029bb6428729 2010-12-13 23:09:24Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef CommonValueExpressionDriver_H
@@ -69,7 +69,7 @@ class CommonValueExpressionDriver
     void operator=(const CommonValueExpressionDriver&);
 
     //- variables from a dictionary
-    string variableString_;
+    stringList variableStrings_;
 
 protected:
 
@@ -88,6 +88,9 @@ protected:
     // Handling the scanner 
     virtual void scan_begin()=0;
     virtual void scan_end()=0;
+
+    //- update stuff that needs updating
+    virtual bool update();
 
     //- actual size of the field
     virtual label size() const = 0;
@@ -158,6 +161,18 @@ public:
         (dict,mesh)
     );
 
+    declareRunTimeSelectionTable
+    (
+        autoPtr,
+        CommonValueExpressionDriver,
+        idName,
+        (
+            const word& id,
+            const fvMesh& mesh
+        ),
+        (id,mesh)
+    );
+
     // Constructors
 
     //- Construct from components
@@ -182,6 +197,14 @@ public:
         const fvMesh& mesh
     );
 
+    //- Return a reference to the selected value driver
+    static autoPtr<CommonValueExpressionDriver> New
+    (
+        const word& type,
+        const word& id,
+        const fvMesh& mesh
+    );
+
     // Destructor
 
     virtual ~CommonValueExpressionDriver();
@@ -202,7 +225,17 @@ public:
 
     void evaluateVariableRemote(const string &remoteExpr,const word &name,const string &expr);
 
+    //- read the list of variable strings (or initialize with a single string)
+    static stringList readVariableStrings(const dictionary &dict);
+ 
+    //- read the list of variable strings (or initialize with a single string)
+    void setVariableStrings(const dictionary &dict);
+
+    Ostream &writeVariableStrings(Ostream &out) const;
+
     void addVariables(const string &exprList,bool clear=true);
+
+    void addVariables(const stringList &exprList,bool clear=true);
 
     template<class Type>
     void setResult(Field<Type> *,bool isPoint=false);

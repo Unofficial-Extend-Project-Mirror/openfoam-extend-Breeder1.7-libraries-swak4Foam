@@ -37,7 +37,7 @@ SourceFiles
     SubsetValueExpressionDriverI.H
     SubsetValueExpressionDriver.C
 
- ICE Revision: $Id: SubsetValueExpressionDriver.H,v aa923b412441 2010-08-31 18:33:24Z bgschaid $ 
+ ICE Revision: $Id: SubsetValueExpressionDriver.H,v c5229f0dd09c 2010-09-24 13:54:17Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef SubsetValueExpressionDriver_H
@@ -141,6 +141,8 @@ public:
     virtual vectorField *makeFaceAreaField()=0;
 
     virtual scalarField *makeFaceFlipField()=0;
+
+    virtual bool isCell()=0;
 
     scalarField *makeIdField();
 

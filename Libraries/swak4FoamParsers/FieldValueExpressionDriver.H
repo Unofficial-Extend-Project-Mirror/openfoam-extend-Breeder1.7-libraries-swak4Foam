@@ -1,4 +1,4 @@
-//  ICE Revision: $Id: FieldValueExpressionDriver.H,v bf831db01a43 2010-09-07 21:41:01Z bgschaid $ 
+//  ICE Revision: $Id: FieldValueExpressionDriver.H,v 3ae42f40a228 2010-12-14 19:25:02Z bgschaid $ 
 
 #ifndef VALUE_EXPRESSION_DRIVER_H
 #define VALUE_EXPRESSION_DRIVER_H
@@ -79,6 +79,9 @@ public:
     //- Construct from dictionary
     FieldValueExpressionDriver(const dictionary &,const fvMesh &);
 
+    //- Construct from an id
+    FieldValueExpressionDriver(const word& id,const fvMesh&mesh);
+    
     virtual ~FieldValueExpressionDriver();
 
     // necessary to override Common
@@ -111,6 +114,9 @@ public:
     bool isCellSet(const string &name);
     bool isCellZone(const string &name);
 
+    bool isFaceSet(const string &name);
+    bool isFaceZone(const string &name);
+
     // returning fields
     template<class T>
     T *getField(const string &name);
@@ -124,6 +130,8 @@ public:
     surfaceVectorField *makeSurfaceVectorField(surfaceScalarField *x,surfaceScalarField *y,surfaceScalarField *z);
     volScalarField *makeCellSetField(const string &name);
     volScalarField *makeCellZoneField(const string &name);
+    surfaceScalarField *makeFaceSetField(const string &name);
+    surfaceScalarField *makeFaceZoneField(const string &name);
 
     // modulo operator
     volScalarField *makeModuloField(const volScalarField &a,const volScalarField &b);

@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: swakExpressionFunctionObject.H,v 7d8293eaa65e 2010-08-29 22:30:24Z bgschaid $ 
+//  OF-extend Revision: $Id$ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox

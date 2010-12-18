@@ -1,4 +1,4 @@
-//  ICE Revision: $Id: FieldValueExpressionDriver.C,v bf831db01a43 2010-09-07 21:41:01Z bgschaid $ 
+//  ICE Revision: $Id: FieldValueExpressionDriver.C,v d336629aa26b 2010-12-14 19:43:35Z bgschaid $ 
 
 #include "FieldValueExpressionDriver.H"
 #include <Random.H>
@@ -8,13 +8,16 @@
 #include "fixedValueFvPatchFields.H"
 #include "wallFvPatch.H"
 #include "cellSet.H"
+#include "faceSet.H"
 
 #include "addToRunTimeSelectionTable.H"
 
 namespace Foam {
 
 defineTypeNameAndDebug(FieldValueExpressionDriver, 0);
+
 addNamedToRunTimeSelectionTable(CommonValueExpressionDriver, FieldValueExpressionDriver, dictionary, internalField);
+addNamedToRunTimeSelectionTable(CommonValueExpressionDriver, FieldValueExpressionDriver, idName, internalField);
 
 FieldValueExpressionDriver::FieldValueExpressionDriver (
     const string& time,
@@ -32,6 +35,23 @@ FieldValueExpressionDriver::FieldValueExpressionDriver (
       time_(time),
       mesh_(mesh),
       runTime_(runTime),
+      typ_(NO_TYPE),
+      resultDimension_(0,0,0,0,0,0,0)
+{
+}
+
+FieldValueExpressionDriver::FieldValueExpressionDriver (
+    const word &id,
+    const fvMesh &mesh
+)
+    : CommonValueExpressionDriver(
+        false,
+        true,
+        false        
+    ),
+      time_(""),
+      mesh_(mesh),
+      runTime_(mesh.time()),
       typ_(NO_TYPE),
       resultDimension_(0,0,0,0,0,0,0)
 {
@@ -138,6 +158,24 @@ bool FieldValueExpressionDriver::isCellSet(const string &name)
 bool FieldValueExpressionDriver::isCellZone(const string &name)
 {
     if(mesh_.cellZones().findZoneID(name)>=0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool FieldValueExpressionDriver::isFaceSet(const string &name)
+{
+    if(getTypeOfSet(name)=="faceSet") {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool FieldValueExpressionDriver::isFaceZone(const string &name)
+{
+    if(mesh_.faceZones().findZoneID(name)>=0) {
         return true;
     } else {
         return false;
@@ -536,6 +574,43 @@ volScalarField *FieldValueExpressionDriver::makeCellSetField(const string &name)
   return f;
 }
 
+surfaceScalarField *FieldValueExpressionDriver::makeFaceSetField(const string &name)
+{
+  surfaceScalarField *f=makeSurfaceScalarField(0);
+
+  IOobject head 
+      (
+          name,
+          time(),
+          polyMesh::meshSubDir/"sets",
+          mesh_,
+          IOobject::MUST_READ,
+          IOobject::NO_WRITE
+      );
+  
+  if(!head.headerOk()) {;
+      head=IOobject 
+          (
+              name,
+              "constant",
+              polyMesh::meshSubDir/"sets",
+              mesh_,
+              IOobject::MUST_READ,
+              IOobject::NO_WRITE
+          );
+      head.headerOk();
+  }
+
+  faceSet cs(head);
+  labelList faces(cs.toc());
+
+  forAll(faces,faceI) {
+    (*f)[faces[faceI]]=1.;
+  }
+
+  return f;
+}
+
 volScalarField *FieldValueExpressionDriver::makeCellZoneField(const string &name)
 {
   volScalarField *f=makeScalarField(0);
@@ -546,6 +621,21 @@ volScalarField *FieldValueExpressionDriver::makeCellZoneField(const string &name
   forAll(zone,ind) {
       label cellI=zone[ind];
       (*f)[cellI]=1.;
+  }
+
+  return f;
+}
+
+surfaceScalarField *FieldValueExpressionDriver::makeFaceZoneField(const string &name)
+{
+  surfaceScalarField *f=makeSurfaceScalarField(0);
+  label zoneID=mesh_.faceZones().findZoneID(name);
+
+  const faceZone &zone=mesh_.faceZones()[zoneID];
+
+  forAll(zone,ind) {
+      label faceI=zone[ind];
+      (*f)[faceI]=1.;
   }
 
   return f;
