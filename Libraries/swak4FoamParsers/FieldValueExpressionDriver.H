@@ -1,4 +1,4 @@
-//  ICE Revision: $Id: FieldValueExpressionDriver.H,v 3ae42f40a228 2010-12-14 19:25:02Z bgschaid $ 
+//  ICE Revision: $Id: FieldValueExpressionDriver.H,v 930e95234040 2011-01-07 23:24:37Z bgschaid $ 
 
 #ifndef VALUE_EXPRESSION_DRIVER_H
 #define VALUE_EXPRESSION_DRIVER_H
@@ -143,6 +143,7 @@ public:
     surfaceScalarField *makeAreaField();
     volVectorField *makePositionField();
     volScalarField *makeDistanceField();
+    volScalarField *makeNearDistanceField();
     volScalarField *makeRDistanceField(const volVectorField &r);
     volScalarField *makeVolumeField();
     volScalarField *makeRandomField();

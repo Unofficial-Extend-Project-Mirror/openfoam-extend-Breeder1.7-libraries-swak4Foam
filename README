@@ -14,6 +14,7 @@
 * Installation/Compilation
 ** Requirements
    - Version 1.7 or 1.6-ext of OpenFOAM (1.6 should work, too)
+     - The =finiteArea=-stuff will only work with version 1.6-ext
    - the compiler generators =bison= and =flex=
    - =simpleSwakFunctionObjects= needs the =simpleFunctionObjects=
      (see
@@ -61,6 +62,9 @@
 *** =swakTopoSources=
     =topoSources= for =cellSet= and =faceSet=. Can be used with the
     =cellSet= and =faceSet=-utilities 
+*** =swakFiniteArea=
+    Implements parsers for the =finiteArea=-stuff in 1.6-ext. Also
+    implements =groovyBC= for =areaField= and =expressionField=
 ** Utilities
 *** =funkySetFields=
     Utility that allows creation and manipulation of files with
@@ -122,6 +126,17 @@
 **** =mixingThing=
      Demonstration case for it.
      - Preparation :: Run the script =prepare.sh= to prepare the case
+*** FiniteArea
+    Demonstration of the =finiteArea=-stuff that works with 1.6-ext
+**** =swakSurfactantFoam=
+     Variation of =surfactantFoam= that adds an =expressionSource=
+**** =planeTransport=
+     Demonstration case
+     - Preparation :: Use =blockMesh= and =makeFaMesh=
+     - Solver :: =surfactantFoam= (without source term) or
+                 =swakSurfactantFoam=
+     - Demonstrates :: FAM-specific =swakExpressions= and =groovyBC=
+                       (as well as the =expressionSource=)
 *** other
     Cases that don't have a =groovyBC=
 **** =angledDuctImplicit=
@@ -151,12 +166,16 @@
    updated. This seems to be a problem with OpenFOAM itself (the
    regular =surfaces=-functionObject doesn't get updated. This is
    currently investigated
+** Missing support for interpolation and point-Fields
+   Apart from patches and internal fields the support for
+   interpolation from cells to faces (and vice versa) is incomplete as
+   well as point fields (although they are supported in the grammar)
 * History
 ** 2010-09-13
    First Release
 ** 2010-12-18
    New release
-   Most importannt changes
+   Most important changes
 *** Parser for =sampledSurfaces=
     Now expressions for the field on a sampled surface can be
     evaluated. All =sampledSurfaces= offered by OpenFOAM now can be
@@ -180,3 +199,19 @@
     your own parser in a separate library without having to change
     anything about the overall =swak4Foam=, but it behaves as if it
     was part of it)
+** 2011-01-30
+*** Support for /Finite Area/-stuff
+    Now there is support for the =finiteArea=-library found in
+    1.6-dev. The support is found in a separate library
+    =swakFiniteArea=. It has
+    - a parser =faField= for =areaFields=
+    - a parser =faPatch= for patches of =areaFields=
+    - a variant of =groovyBC= for these patches
+    - a computed source =faExpressionSource=
+    - Function-object-variants for =areaFields=: =clearExpression=,
+      =expressionField= and =manipulateField=. These work the same as
+      their =volField=-counterparts
+*** Bugfix for compiling in single precision
+    See https://sourceforge.net/apps/mantisbt/openfoam-extend/view.php?id=49
+*** New function =nearDist=
+    See https://sourceforge.net/apps/mantisbt/openfoam-extend/view.php?id=44

@@ -1,12 +1,10 @@
-//  ICE Revision: $Id: FieldValueExpressionDriver.C,v d336629aa26b 2010-12-14 19:43:35Z bgschaid $ 
+//  ICE Revision: $Id: FieldValueExpressionDriver.C,v 930e95234040 2011-01-07 23:24:37Z bgschaid $ 
 
 #include "FieldValueExpressionDriver.H"
 #include <Random.H>
 #include <wallDist.H>
+#include <nearWallDist.H>
 #include <dimensionedVector.H>
-#include "zeroGradientFvPatchFields.H"
-#include "fixedValueFvPatchFields.H"
-#include "wallFvPatch.H"
 #include "cellSet.H"
 #include "faceSet.H"
 
@@ -468,6 +466,30 @@ volScalarField *FieldValueExpressionDriver::makeDistanceField()
 
 }
 
+volScalarField *FieldValueExpressionDriver::makeNearDistanceField()
+{
+    dimensionSet nullDim(0,0,0,0,0);
+    volScalarField *f=new volScalarField(
+        IOobject
+        (
+            "dist",
+            time(),
+            mesh_,
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
+        ),
+        mesh_,
+        0.,
+        "fixedValue"
+    );
+    f->dimensions().reset(mesh_.C().dimensions());
+    nearWallDist dist(mesh_);
+    f->boundaryField()==dist;
+    f->dimensions().reset(nullDim);
+    return f;
+
+}
+
 volScalarField *FieldValueExpressionDriver::makeRDistanceField(const volVectorField& r)
 {
     dimensionSet nullDim(0,0,0,0,0);
@@ -718,100 +740,6 @@ surfaceVectorField *FieldValueExpressionDriver::makeSurfaceVectorField
     return f;
 }
 
-template<class T>
-void FieldValueExpressionDriver::makePatches
-(
-    GeometricField<T,fvPatchField,volMesh> &field,
-    bool keepPatches,
-    const wordList &fixedPatches
-) {
-  typename GeometricField<T,fvPatchField,volMesh>::GeometricBoundaryField &bf=field.boundaryField();
-  List<fvPatchField<T> *>bfNew(bf.size());
-
-  forAll(bf,patchI) {
-    const fvPatch &patch=bf[patchI].patch();
-
-    bool isValuePatch=false;
-    forAll(fixedPatches,i) {
-      if(fixedPatches[i]==patch.name()) {
-	isValuePatch=true;
-      }
-    }
-
-    if(
-        (
-            !keepPatches 
-            || 
-            isValuePatch
-        ) 
-        && 
-        (
-            typeid(patch)==typeid(wallFvPatch)
-            || 
-            typeid(patch)==typeid(fvPatch
-            )
-        )
-    ) {
-        if(isValuePatch){
-            bfNew[patchI]=new fixedValueFvPatchField<T>(patch,field);  
-        } else {
-            bfNew[patchI]=new zeroGradientFvPatchField<T>(patch,field);      
-        }
-    } else {
-        bfNew[patchI]=bf[patchI].clone().ptr();
-    }
-  }
-
-  bf.clear();
-  bf.setSize(bfNew.size());
-  forAll(bf,i) {
-      bf.set(i,bfNew[i]);
-  }
-}
-
-template<class T>
-void FieldValueExpressionDriver::setValuePatches
-(
-    GeometricField<T,fvPatchField,volMesh> &field,
-    bool keepPatches,
-    const wordList &fixedPatches
-) {
-  typename GeometricField<T,fvPatchField,volMesh>::GeometricBoundaryField &bf=field.boundaryField();
-  List<fvPatchField<T> *>bfNew(bf.size());
-
-  forAll(bf,patchI) {
-    const fvPatch &patch=bf[patchI].patch();
-
-    bool isValuePatch=false;
-    forAll(fixedPatches,i) {
-      if(fixedPatches[i]==patch.name()) {
-	isValuePatch=true;
-      }
-    }
-
-    if(
-        (
-            !keepPatches 
-            ||
-            isValuePatch
-        ) 
-        && 
-        (
-            typeid(patch)==typeid(wallFvPatch)
-            ||
-            typeid(patch)==typeid(fvPatch
-            )
-        )
-    ) {
-        if(typeid(field.boundaryField()[patchI])==typeid(fixedValueFvPatchField<T>)) {
-            fvPatchField<T> &pf=field.boundaryField()[patchI];
-            
-            pf==pf.patchInternalField();
-        }
-    }
-  }
-}
-
 const word FieldValueExpressionDriver::time() const
 {
     if(time_!="") {
@@ -819,17 +747,6 @@ const word FieldValueExpressionDriver::time() const
     } else {
         return CommonValueExpressionDriver::time();
     }
-}
-
-// Force the compiler to generate the code, there'S a better way but I'm too stupid
-void dummyS(GeometricField<scalar,fvPatchField,volMesh>  &f,bool keepPatches,const wordList &fixedPatches) {
-    FieldValueExpressionDriver::makePatches(f,keepPatches,fixedPatches);
-    FieldValueExpressionDriver::setValuePatches(f,keepPatches,fixedPatches);
-}
-
-void dummyV(GeometricField<vector,fvPatchField,volMesh>  &f,bool keepPatches,const wordList &fixedPatches) {
-    FieldValueExpressionDriver::makePatches(f,keepPatches,fixedPatches);
-    FieldValueExpressionDriver::setValuePatches(f,keepPatches,fixedPatches);
 }
 
 } // end namespace

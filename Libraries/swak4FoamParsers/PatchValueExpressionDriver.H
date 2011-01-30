@@ -37,7 +37,7 @@ SourceFiles
     PatchValueExpressionDriverI.H
     PatchValueExpressionDriver.C
 
- ICE Revision: $Id: PatchValueExpressionDriver.H,v f8e5fd494c2b 2010-12-13 23:21:54Z bgschaid $ 
+ ICE Revision: $Id: PatchValueExpressionDriver.H,v 8f5a822ccc8d 2011-01-09 12:07:29Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef PatchValueExpressionDriver_H
@@ -143,6 +143,8 @@ public:
     scalarField *makeWeightsField();
 
     scalarField *makeFaceIdField();
+
+    scalarField *makeNearDistField();
 
     template<class Type>
     Field<Type> *getField(const string &name);

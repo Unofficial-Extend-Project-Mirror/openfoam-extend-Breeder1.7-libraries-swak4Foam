@@ -38,7 +38,7 @@ SourceFiles
     SurfacesRepository.C
     SurfacesRepositoryIO.C
 
- ICE Revision: $Id: SurfacesRepository.H,v 4722e018a9ce 2010-12-12 20:26:18Z bgschaid $ 
+ ICE Revision: $Id: SurfacesRepository.H,v 2af25bda7fb5 2011-01-04 12:54:31Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef SurfacesRepository_H
@@ -76,7 +76,7 @@ public:
 
     //- Destructor
 
-    ~SurfacesRepository();
+    virtual ~SurfacesRepository();
 
     //- Get the Singleton of this class
     static SurfacesRepository &getRepository();

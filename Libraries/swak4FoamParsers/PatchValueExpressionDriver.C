@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: PatchValueExpressionDriver.C,v f8e5fd494c2b 2010-12-13 23:21:54Z bgschaid $ 
+ ICE Revision: $Id: PatchValueExpressionDriver.C,v 8f5a822ccc8d 2011-01-09 12:07:29Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "PatchValueExpressionDriver.H"
@@ -40,6 +40,8 @@ License
 #include "Random.H"
 
 #include "addToRunTimeSelectionTable.H"
+
+#include <nearWallDist.H>
 
 namespace Foam {
 
@@ -193,6 +195,14 @@ scalarField *PatchValueExpressionDriver::makeFaceIdField()
     forAll(*result,i) {
         (*result)[i]=i;
     }
+    return result;
+}
+
+scalarField *PatchValueExpressionDriver::makeNearDistField()
+{
+    scalarField *result=new scalarField(patch_.size());
+    nearWallDist dist(this->mesh());
+    (*result)=dist[patch_.index()];
     return result;
 }
 
