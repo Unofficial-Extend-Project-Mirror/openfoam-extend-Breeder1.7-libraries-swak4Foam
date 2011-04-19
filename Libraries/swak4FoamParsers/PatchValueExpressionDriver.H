@@ -37,7 +37,7 @@ SourceFiles
     PatchValueExpressionDriverI.H
     PatchValueExpressionDriver.C
 
- ICE Revision: $Id: PatchValueExpressionDriver.H,v 8f5a822ccc8d 2011-01-09 12:07:29Z bgschaid $ 
+ ICE Revision: $Id: PatchValueExpressionDriver.H,v b62fab3bce62 2011-02-22 19:50:22Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef PatchValueExpressionDriver_H
@@ -108,6 +108,9 @@ public:
 
     //- Construct from components
     PatchValueExpressionDriver(const fvPatch& patch_);
+    
+    //- Construct from components
+    PatchValueExpressionDriver(const dictionary& dict,const fvPatch& patch_);
     
     //- Construct from a dictionary
     PatchValueExpressionDriver(const dictionary& dict,const fvMesh&mesh);

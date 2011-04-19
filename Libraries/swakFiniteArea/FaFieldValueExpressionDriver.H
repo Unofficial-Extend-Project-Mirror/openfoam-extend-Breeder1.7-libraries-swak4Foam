@@ -1,4 +1,4 @@
-//  ICE Revision: $Id$ 
+//  ICE Revision: $Id: FaFieldValueExpressionDriver.H,v 942e8def1dae 2011-03-19 16:24:43Z bgschaid $ 
 
 #ifndef FAFIELD_VALUE_EXPRESSION_DRIVER_H
 #define FAFIELD_VALUE_EXPRESSION_DRIVER_H
@@ -103,12 +103,14 @@ public:
     template<class T>
     T *getField(const string &name);
 
+    template<class FType>
+    inline FType *makeConstantField(const typename FType::value_type &val);
+
+    template<class FType>
+    inline FType *makeField(const Field<typename FType::value_type> &val);
+
     // make constant fields
-    areaScalarField *makeScalarField(const scalar &val);
-    areaVectorField *makeVectorField(const vector &vec);
     areaVectorField *makeVectorField(areaScalarField *x,areaScalarField *y,areaScalarField *z);
-    edgeScalarField *makeEdgeScalarField(const scalar &val);
-    edgeVectorField *makeEdgeVectorField(const vector &vec);
     edgeVectorField *makeEdgeVectorField(edgeScalarField *x,edgeScalarField *y,edgeScalarField *z);
     // areaScalarField *makeCellSetField(const string &name);
     // areaScalarField *makeCellZoneField(const string &name);
@@ -146,11 +148,11 @@ public:
     template <class T,class Field>
     T * doConditional(Field *l,T* yes,T* no,T* result);
 
-    // template<class T>
-    // static void makePatches(GeometricField<T,fvPatchField,areaMesh> &field,bool keepPatches,const wordList &fixedPatches);
+    template<class T>
+    static void makePatches(GeometricField<T,faPatchField,areaMesh> &field,bool keepPatches,const wordList &fixedPatches);
 
-    // template<class T>
-    // static void setValuePatches(GeometricField<T,fvPatchField,areaMesh> &field,bool keepPatches,const wordList &fixedPatches);
+    template<class T>
+    static void setValuePatches(GeometricField<T,faPatchField,areaMesh> &field,bool keepPatches,const wordList &fixedPatches);
 
 };
 

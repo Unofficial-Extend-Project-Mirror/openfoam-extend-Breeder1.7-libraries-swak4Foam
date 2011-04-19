@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: PatchValueExpressionDriver.C,v 8f5a822ccc8d 2011-01-09 12:07:29Z bgschaid $ 
+ ICE Revision: $Id: PatchValueExpressionDriver.C,v b62fab3bce62 2011-02-22 19:50:22Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "PatchValueExpressionDriver.H"
@@ -66,6 +66,12 @@ PatchValueExpressionDriver::PatchValueExpressionDriver(const PatchValueExpressio
 PatchValueExpressionDriver::PatchValueExpressionDriver(const fvPatch& patch)
 :
     CommonValueExpressionDriver(),
+    patch_(patch)
+{}
+
+PatchValueExpressionDriver::PatchValueExpressionDriver(const dictionary& dict,const fvPatch& patch)
+:
+    CommonValueExpressionDriver(dict),
     patch_(patch)
 {}
 

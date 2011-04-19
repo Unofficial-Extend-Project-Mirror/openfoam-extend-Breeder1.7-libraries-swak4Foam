@@ -1,7 +1,10 @@
-//  ICE Revision: $Id$ 
+//  ICE Revision: $Id: FaFieldValueExpressionDriverI.H,v 942e8def1dae 2011-03-19 16:24:43Z bgschaid $ 
 
 #ifndef VALUE_EXPRESSION_DRIVER_I_H
 #define VALUE_EXPRESSION_DRIVER_I_H
+
+#include "fixedValueFaPatchFields.H"
+#include "zeroGradientFaPatchFields.H"
 
 namespace Foam {
 
@@ -117,6 +120,150 @@ inline const faMesh &FaFieldValueExpressionDriver::aMesh() const
 inline const fvMesh &FaFieldValueExpressionDriver::mesh() const
 {
     return dynamic_cast<const fvMesh&>(mesh_.thisDb());
+}
+
+template<class T>
+void FaFieldValueExpressionDriver::makePatches
+(
+    GeometricField<T,faPatchField,areaMesh> &field,
+    bool keepPatches,
+    const wordList &fixedPatches
+) {
+  typename GeometricField<T,faPatchField,areaMesh>::GeometricBoundaryField &bf=field.boundaryField();
+  List<faPatchField<T> *>bfNew(bf.size());
+
+  forAll(bf,patchI) {
+    const faPatch &patch=bf[patchI].patch();
+
+    bool isValuePatch=false;
+    forAll(fixedPatches,i) {
+      if(fixedPatches[i]==patch.name()) {
+	isValuePatch=true;
+      }
+    }
+
+    if(
+        (
+            !keepPatches 
+            || 
+            isValuePatch
+        ) 
+        && 
+        (
+            typeid(patch)==typeid(fvPatch)
+        )
+    ) {
+        if(isValuePatch){
+            bfNew[patchI]=new fixedValueFaPatchField<T>(patch,field);  
+        } else {
+            bfNew[patchI]=new zeroGradientFaPatchField<T>(patch,field);      
+        }
+    } else {
+        bfNew[patchI]=bf[patchI].clone().ptr();
+    }
+  }
+
+  bf.clear();
+  bf.setSize(bfNew.size());
+  forAll(bf,i) {
+      bf.set(i,bfNew[i]);
+  }
+}
+
+template<class T>
+void FaFieldValueExpressionDriver::setValuePatches
+(
+    GeometricField<T,faPatchField,areaMesh> &field,
+    bool keepPatches,
+    const wordList &fixedPatches
+) {
+  typename GeometricField<T,faPatchField,areaMesh>::GeometricBoundaryField &bf=field.boundaryField();
+  List<faPatchField<T> *>bfNew(bf.size());
+
+  forAll(bf,patchI) {
+    const faPatch &patch=bf[patchI].patch();
+
+    bool isValuePatch=false;
+    forAll(fixedPatches,i) {
+      if(fixedPatches[i]==patch.name()) {
+	isValuePatch=true;
+      }
+    }
+
+    if(
+        (
+            !keepPatches 
+            ||
+            isValuePatch
+        ) 
+        && 
+        (
+            typeid(patch)==typeid(fvPatch)
+        )
+    ) {
+        if(typeid(field.boundaryField()[patchI])==typeid(fixedValueFaPatchField<T>)) {
+            faPatchField<T> &pf=field.boundaryField()[patchI];
+            
+            pf==pf.patchInternalField();
+        }
+    }
+  }
+}
+
+template<class FType>
+inline FType *FaFieldValueExpressionDriver::makeField(const Field<typename FType::value_type> &val)
+{
+    std::ostringstream buff;
+    buff << "field" << pTraits<typename FType::value_type>::typeName;
+
+    FType *f=new FType(
+        IOobject
+        (
+            buff.str(),
+            time(),
+            mesh(),
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
+        ),
+        aMesh(),
+        pTraits<typename FType::value_type>::zero,
+        "zeroGradient"
+    );
+
+    if(val.size()!=f->internalField().size()) {
+        FatalErrorIn("FaFieldValueExpressionDriver::makeField(const Field<typename FType::value_type> &val)")
+            << "Size " << val.size() << " of the assigned field is not the required "
+                << f->internalField().size()
+                << endl
+                << abort(FatalError);
+    }
+
+    f->internalField()=val;
+
+    return f;
+}
+
+template<class FType>
+inline FType *FaFieldValueExpressionDriver::makeConstantField(const typename FType::value_type &val)
+{
+    std::ostringstream buff;
+    buff << "constant" << pTraits<typename FType::value_type>::typeName;
+
+    FType *f=new FType(
+        IOobject
+        (
+            buff.str(),
+            time(),
+            mesh(),
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
+        ),
+        aMesh(),
+        val,
+        "zeroGradient"
+    );
+
+    return f;
 }
 
 } // end namespace

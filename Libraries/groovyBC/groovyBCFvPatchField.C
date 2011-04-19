@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: groovyBCFvPatchField.C,v 032b759f880d 2010-12-13 20:53:59Z bgschaid $ 
+ ICE Revision: $Id: groovyBCFvPatchField.C,v 8167f6a9e2e0 2011-03-20 13:18:35Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "groovyBCFvPatchField.H"
@@ -41,24 +41,6 @@ namespace Foam
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 template<class Type>
-string groovyBCFvPatchField<Type>::nullValue()
-{
-    if(string(pTraits<Type>::typeName)==string("vector")) {
-        return string("vector(0,0,0)");
-    } else if(string(pTraits<Type>::typeName)==string("tensor")) {
-        return string("tensor(0,0,0,0,0,0,0,0,0)");
-    } else if(string(pTraits<Type>::typeName)==string("symmTensor")) {
-        return string("symmTensor(0,0,0,0,0,0)");
-    } else if(string(pTraits<Type>::typeName)==string("sphericalTensor")) {
-        return string("sphericalTensor(0)");
-    } else {
-        OStringStream tmp;
-        tmp << pTraits<Type>::zero;
-        return tmp.str();
-    }
-}
-
-template<class Type>
 groovyBCFvPatchField<Type>::groovyBCFvPatchField
 (
     const fvPatch& p,
@@ -66,7 +48,7 @@ groovyBCFvPatchField<Type>::groovyBCFvPatchField
 )
 :
     mixedFvPatchField<Type>(p, iF),
-    fractionExpression_("0"),
+    groovyBCCommon<Type>(true),
     driver_(this->patch())
 {
     if(debug) {
@@ -74,10 +56,7 @@ groovyBCFvPatchField<Type>::groovyBCFvPatchField
     }
 
     this->refValue() = pTraits<Type>::zero;
-    valueExpression_ = nullValue();
     this->refGrad() = pTraits<Type>::zero;
-    gradientExpression_ = nullValue();
-    this->valueFraction() = 0.0;
 }
 
 
@@ -91,9 +70,7 @@ groovyBCFvPatchField<Type>::groovyBCFvPatchField
 )
 :
     mixedFvPatchField<Type>(ptf, p, iF, mapper),
-    valueExpression_(ptf.valueExpression_),
-    gradientExpression_(ptf.gradientExpression_),
-    fractionExpression_(ptf.fractionExpression_),
+    groovyBCCommon<Type>(ptf),
     driver_(this->patch(),ptf.driver_)
 {
     if(debug) {
@@ -111,30 +88,14 @@ groovyBCFvPatchField<Type>::groovyBCFvPatchField
 )
 :
     mixedFvPatchField<Type>(p, iF),
-    fractionExpression_(dict.lookupOrDefault("fractionExpression",string("1"))),
+    groovyBCCommon<Type>(dict,true),
     driver_(this->patch())
 {
-    driver_.setVariableStrings(dict);
-
     if(debug) {
         Info << "groovyBCFvPatchField<Type>::groovyBCFvPatchField 3" << endl;
     }
 
-    if (dict.found("valueExpression"))
-    {
-        dict.lookup("valueExpression") >> valueExpression_;
-    } else {
-        valueExpression_ = nullValue();
-    }
-    if (dict.found("gradientExpression"))
-    {
-        dict.lookup("gradientExpression") >> gradientExpression_;
-    } else {
-        gradientExpression_ = nullValue();
-    }
-    if(dict.found("timelines")) {
-        driver_.readLines(dict.lookup("timelines"));
-    }
+    driver_.readVariablesAndTables(dict);
 
     this->refValue() = pTraits<Type>::zero;
 
@@ -148,6 +109,17 @@ groovyBCFvPatchField<Type>::groovyBCFvPatchField
     else
     {
         fvPatchField<Type>::operator=(this->refValue());
+        WarningIn(
+            "groovyBCFvPatchField<Type>::groovyBCFvPatchField"
+            "("
+            "const fvPatch& p,"
+            "const DimensionedField<Type, volMesh>& iF,"
+            "const dictionary& dict"
+            ")"
+        ) << "No value defined for " << this->dimensionedInternalField().name()
+            << " on " << this->patch().name() << " therefore using "
+            << this->refValue()
+            << endl;
     }
 
     this->refGrad() = pTraits<Type>::zero;
@@ -162,9 +134,7 @@ groovyBCFvPatchField<Type>::groovyBCFvPatchField
 )
 :
     mixedFvPatchField<Type>(ptf),
-    valueExpression_(ptf.valueExpression_),
-    gradientExpression_(ptf.gradientExpression_),
-    fractionExpression_(ptf.fractionExpression_),
+    groovyBCCommon<Type>(ptf),
     driver_(this->patch(),ptf.driver_)
 {
     if(debug) {
@@ -181,9 +151,7 @@ groovyBCFvPatchField<Type>::groovyBCFvPatchField
 )
 :
     mixedFvPatchField<Type>(ptf, iF),
-    valueExpression_(ptf.valueExpression_),
-    gradientExpression_(ptf.gradientExpression_),
-    fractionExpression_(ptf.fractionExpression_),
+    groovyBCCommon<Type>(ptf),
     driver_(this->patch(),ptf.driver_)
 {
     if(debug) {
@@ -199,9 +167,9 @@ void groovyBCFvPatchField<Type>::updateCoeffs()
 {
     if(debug) {
         Info << "groovyBCFvPatchField<Type>::updateCoeffs" << endl;
-        Info << "Value: " << valueExpression_ << endl;
-        Info << "Gradient: " << gradientExpression_ << endl;
-        Info << "Fraction: " << fractionExpression_ << endl;
+        Info << "Value: " << this->valueExpression_ << endl;
+        Info << "Gradient: " << this->gradientExpression_ << endl;
+        Info << "Fraction: " << this->fractionExpression_ << endl;
         Info << "Variables: ";
         driver_.writeVariableStrings(Info) << endl;
     }
@@ -216,9 +184,9 @@ void groovyBCFvPatchField<Type>::updateCoeffs()
 
     driver_.clearVariables();
 
-    this->refValue() = driver_.evaluate<Type>(valueExpression_);
-    this->refGrad() = driver_.evaluate<Type>(gradientExpression_);
-    this->valueFraction() = driver_.evaluate<scalar>(fractionExpression_);
+    this->refValue() = driver_.evaluate<Type>(this->valueExpression_);
+    this->refGrad() = driver_.evaluate<Type>(this->gradientExpression_);
+    this->valueFraction() = driver_.evaluate<scalar>(this->fractionExpression_);
     
     mixedFvPatchField<Type>::updateCoeffs();
 }
@@ -231,17 +199,9 @@ void groovyBCFvPatchField<Type>::write(Ostream& os) const
         Info << "groovyBCFvPatchField<Type>::write" << endl;
     }
     mixedFvPatchField<Type>::write(os);
-    os.writeKeyword("valueExpression")
-        << valueExpression_ << token::END_STATEMENT << nl;
-    os.writeKeyword("gradientExpression")
-        << gradientExpression_ << token::END_STATEMENT << nl;
-    os.writeKeyword("fractionExpression")
-        << fractionExpression_ << token::END_STATEMENT << nl;
-    os.writeKeyword("variables");
-    driver_.writeVariableStrings(os) << token::END_STATEMENT << nl;
-    os.writeKeyword("timelines");
-    driver_.writeLines(os);
-    os << token::END_STATEMENT << nl;
+    groovyBCCommon<Type>::write(os);
+
+    driver_.writeCommon(os,this->debug_ || debug);
 }
 
 

@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: patchExpressionFunctionObject.H,v 21790cde520b 2010-12-13 22:43:08Z bgschaid $ 
+//  OF-extend Revision: $Id: patchExpressionFunctionObject.H,v 04f8374cd7a7 2011-04-09 16:16:45Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -70,11 +70,14 @@ class patchExpressionFunctionObject
     //- the expression that is to be evaluated 
     string expression_;
 
-    //- expressions for variables
-    stringList variables_;
+    //- the specification
+    dictionary data_;
 
     //- list with the accumulations of evaluated expression
     wordList accumulations_;
+
+    PtrList<PatchValueExpressionDriver> drivers_;
+
 protected:
 
     word dirName();
@@ -104,6 +107,8 @@ public:
     //- Do the writing
     virtual void write();
 
+    //- read the stuff
+    virtual bool start();
 };
 
 

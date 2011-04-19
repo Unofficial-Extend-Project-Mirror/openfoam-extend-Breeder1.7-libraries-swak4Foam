@@ -36,7 +36,7 @@ Description
 SourceFiles
     groovyBCPointPatchField.C
 
- ICE Revision: $Id: groovyBCPointPatchField.H,v 032b759f880d 2010-12-13 20:53:59Z bgschaid $ 
+ ICE Revision: $Id: groovyBCPointPatchField.H,v 04da3db3fb3b 2011-02-04 17:23:00Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef groovyBCPointPatchField_H
@@ -58,6 +58,8 @@ SourceFiles
 
 #include "PatchValueExpressionDriver.H"
 
+#include "groovyBCCommon.H"
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
@@ -70,17 +72,13 @@ namespace Foam
 template<class Type>
 class groovyBCPointPatchField
 :
-    public mixedPointPatchFieldType
+    public mixedPointPatchFieldType,
+    public groovyBCCommon<Type>
 {
 
 protected:
 
     // Protected data
-
-    // the expressions
-    string valueExpression_;
-    //    string gradientExpression_;
-    string fractionExpression_;
 
     PatchValueExpressionDriver driver_;
 

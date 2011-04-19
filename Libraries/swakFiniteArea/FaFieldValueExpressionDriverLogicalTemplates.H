@@ -1,4 +1,4 @@
-//  ICE Revision: $Id$ 
+//  ICE Revision: $Id: FaFieldValueExpressionDriverLogicalTemplates.H,v 942e8def1dae 2011-03-19 16:24:43Z bgschaid $ 
 
 #ifndef VALUE_EXPRESSION_LOGICAL_TEMPLATES
 #define VALUE_EXPRESSION_LOGICAL_TEMPLATES
@@ -8,13 +8,13 @@ namespace Foam {
 template<>
 areaScalarField *FaFieldValueExpressionDriver::makeLogicalField<areaScalarField>(scalar val)
 {
-    return makeScalarField(val);
+    return makeConstantField<areaScalarField>(val);
 }
 
 template<>
 edgeScalarField *FaFieldValueExpressionDriver::makeLogicalField<edgeScalarField>(scalar val)
 {
-    return makeEdgeScalarField(val);
+    return makeConstantField<edgeScalarField>(val);
 }
 
 #define getFaceValue(ding) (ding->boundaryField()[pI][fI])

@@ -37,7 +37,7 @@ Description
 SourceFiles
     groovyBCFvPatchField.C
 
- ICE Revision: $Id: groovyBCFvPatchField.H,v 032b759f880d 2010-12-13 20:53:59Z bgschaid $ 
+ ICE Revision: $Id: groovyBCFvPatchField.H,v 3b55bee48cda 2011-02-04 16:59:33Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef groovyBCFvPatchField_H
@@ -46,6 +46,8 @@ SourceFiles
 #include "mixedFvPatchField.H"
 
 #include "PatchValueExpressionDriver.H"
+
+#include "groovyBCCommon.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -59,21 +61,16 @@ namespace Foam
 template<class Type>
 class groovyBCFvPatchField
 :
-    public mixedFvPatchField<Type>
+    public mixedFvPatchField<Type>,
+    public groovyBCCommon<Type>
 {
 
 protected:
 
     // Protected data
 
-    // the expressions
-    string valueExpression_;
-    string gradientExpression_;
-    string fractionExpression_;
-
     PatchValueExpressionDriver driver_;
 
-    string nullValue();
 public:
 
     //- Runtime type information

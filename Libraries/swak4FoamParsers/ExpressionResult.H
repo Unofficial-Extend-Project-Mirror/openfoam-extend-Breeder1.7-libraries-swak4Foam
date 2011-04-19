@@ -38,7 +38,7 @@ SourceFiles
     ExpressionResult.C
     ExpressionResultIO.C
 
- ICE Revision: $Id: ExpressionResult.H,v c8d3fc38149b 2010-09-07 21:45:25Z bgschaid $ 
+ ICE Revision: $Id: ExpressionResult.H,v 653817d13eb8 2011-04-08 20:58:57Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef ExpressionResult_H
@@ -80,6 +80,9 @@ public:
     //- Construct as copy
     ExpressionResult(const ExpressionResult&);
 
+    //- Construct from a dictionary
+    ExpressionResult(const dictionary&);
+
     // Destructor
 
     ~ExpressionResult();
@@ -106,6 +109,10 @@ public:
     inline const string &type() const;
 
     inline bool isPoint() const;
+
+    bool hasValue() const;
+
+    friend Ostream & operator<<(Ostream &,const ExpressionResult &);
 };
 
 

@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id$ 
+//  OF-extend Revision: $Id: expressionFaField.H,v 5a312d50a849 2011-04-09 23:55:13Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -50,6 +50,7 @@ class objectRegistry;
 class dictionary;
 class mapPolyMesh;
 
+class FaFieldValueExpressionDriver;
 
 class expressionFaField
 {
@@ -77,6 +78,8 @@ protected:
 
     const objectRegistry& obr_;
 
+    const dictionary &dict_;
+
     autoPtr<areaVectorField> vectorField_;
 
     autoPtr<areaScalarField> scalarField_;
@@ -86,6 +89,8 @@ protected:
         const T &data,
         autoPtr<T> &store
     );
+
+    autoPtr<FaFieldValueExpressionDriver> driver_;
 
 public:
 

@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: expressionField.H,v bf831db01a43 2010-09-07 21:41:01Z bgschaid $ 
+//  OF-extend Revision: $Id: expressionField.H,v af79d48de2f3 2011-04-09 16:35:12Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -42,6 +42,7 @@ SourceFiles
 #include "pointFieldFwd.H"
 #include "Switch.H"
 #include "autoPtr.H"
+#include "dictionary.H"
 
 namespace Foam
 {
@@ -50,6 +51,7 @@ class objectRegistry;
 class dictionary;
 class mapPolyMesh;
 
+class FieldValueExpressionDriver;
 
 class expressionField
 {
@@ -81,11 +83,15 @@ protected:
 
     autoPtr<volScalarField> scalarField_;
 
+    dictionary dict_;
+
     template<class T>
     void storeField(
         const T &data,
         autoPtr<T> &store
     );
+
+    autoPtr<FieldValueExpressionDriver> driver_;
 
 public:
 

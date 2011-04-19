@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: SampledSurfaceValueExpressionDriverI.H,v 83278753e0a8 2010-12-12 19:52:11Z bgschaid $ 
+ ICE Revision: $Id: SampledSurfaceValueExpressionDriverI.H,v 5c299ad26185 2011-04-11 09:10:56Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -63,27 +63,63 @@ namespace Foam {
         if(this->variables_.found(name)) {
             return this->variables_[name].getResult<Type>(true).ptr();
         }
-        Field<Type> *result;
+        Field<Type> *result=NULL;
 
-        if(interpolate_) {
-            autoPtr<interpolation<Type> > inter(
-                interpolation<Type>::New(
-                    interpolationType_,
-                    this->mesh().lookupObject<volField>(name)
-                )
-            );
-            
-            result=new Field<Type>(
-                this->theSurface_.interpolate(
-                    inter()
-                )
-            );
+        if(
+            this->searchInMemory() 
+            && 
+            this->mesh().foundObject<volField>(name)
+        ) {
+            if(interpolate_) {
+                autoPtr<interpolation<Type> > inter(
+                    interpolation<Type>::New(
+                        interpolationType_,
+                        this->mesh().lookupObject<volField>(name)
+                    )
+                );
+                
+                result=new Field<Type>(
+                    this->theSurface_.interpolate(
+                        inter()
+                    )
+                );
+            } else {
+                result=new Field<Type>(
+                    this->theSurface_.sample(
+                        this->mesh().lookupObject<volField>(name)
+                    )
+                );
+            }
         } else {
-            result=new Field<Type>(
-                this->theSurface_.sample(
-                    this->mesh().lookupObject<volField>(name)
-                )
-            );
+            autoPtr<volField> f=this->getOrReadField<volField>(name);
+
+            if(interpolate_) {
+                autoPtr<interpolation<Type> > inter(
+                    interpolation<Type>::New(
+                        interpolationType_,
+                        f()
+                    )
+                );
+                
+                result=new Field<Type>(
+                    this->theSurface_.interpolate(
+                        inter()
+                    )
+                );
+            } else {
+                result=new Field<Type>(
+                    this->theSurface_.sample(
+                        f()
+                    )
+                );
+            }
+        }
+
+        if(result==NULL) {
+            FatalErrorIn("SampledSurfaceValueExpressionDriver::sampleOrInterpolateInternal(const word &name)")
+                << "No valid result" 
+                    << endl
+                    << abort(FatalError);
         }
 
         return result;

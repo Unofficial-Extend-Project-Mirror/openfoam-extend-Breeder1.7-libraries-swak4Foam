@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: SampledSurfaceValueExpressionDriver.C,v d336629aa26b 2010-12-14 19:43:35Z bgschaid $ 
+ ICE Revision: $Id: SampledSurfaceValueExpressionDriver.C,v 0ce187e34e0c 2011-02-22 22:39:26Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "SampledSurfaceValueExpressionDriver.H"
@@ -140,7 +140,7 @@ SampledSurfaceValueExpressionDriver::~SampledSurfaceValueExpressionDriver()
 
 bool SampledSurfaceValueExpressionDriver::update()
 {
-    bool updated=theSurface_.update();
+    bool updated=theSurface_.update(); // valgrind reports huge memory losses here
     if(debug) {
         Info << "Updated: " << updated << " " << this->size() << endl;
     }
@@ -190,7 +190,7 @@ Field<sphericalTensor> *SampledSurfaceValueExpressionDriver::getSphericalTensorF
 
 vectorField *SampledSurfaceValueExpressionDriver::makePositionField()
 {
-    return new vectorField(theSurface_.Cf());
+    return new vectorField(theSurface_.Cf());  // valgrind reports huge memory losses here
 }
 
 scalarField *SampledSurfaceValueExpressionDriver::makeCellVolumeField()

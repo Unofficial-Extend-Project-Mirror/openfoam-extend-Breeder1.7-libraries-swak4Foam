@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id$ 
+//  OF-extend Revision: $Id: manipulateFaField.H,v 5a312d50a849 2011-04-09 23:55:13Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -50,6 +50,7 @@ class objectRegistry;
 class dictionary;
 class mapPolyMesh;
 
+class FaFieldValueExpressionDriver;
 
 class manipulateFaField
 {
@@ -77,11 +78,15 @@ protected:
 
     const objectRegistry& obr_;
 
+    const dictionary &dict_;
+
     template<class T>
     void manipulate(
         const T &data,
         const areaScalarField &mask
     );
+
+    autoPtr<FaFieldValueExpressionDriver> driver_;
 
 public:
 

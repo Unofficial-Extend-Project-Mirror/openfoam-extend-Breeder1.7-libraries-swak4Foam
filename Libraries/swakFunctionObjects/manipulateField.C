@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: manipulateField.C,v bf831db01a43 2010-09-07 21:41:01Z bgschaid $ 
+//  OF-extend Revision: $Id: manipulateField.C,v ba70edae8ed2 2011-04-09 22:50:11Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -42,7 +42,8 @@ Foam::manipulateField::manipulateField
 )
 :
     active_(true),
-    obr_(obr)
+    obr_(obr),
+    dict_(dict)
 {
     if (!isA<fvMesh>(obr_))
     {
@@ -80,53 +81,54 @@ void Foam::manipulateField::read(const dictionary& dict)
         name_=word(dict.lookup("fieldName"));
         expression_=string(dict.lookup("expression"));
         maskExpression_=string(dict.lookup("mask"));
+
+        const fvMesh& mesh = refCast<const fvMesh>(obr_);
+        
+        driver_.set(
+            new FieldValueExpressionDriver(
+                mesh.time().timeName(),
+                mesh.time(),
+                mesh,
+                false, // no caching. No need
+                true,  // search fields in memory
+                false  // don't look up files in memory
+            )
+        );
+
+        driver_->readVariablesAndTables(dict_);
     }
 }
 
 void Foam::manipulateField::execute()
 {
     if(active_) {
-        const fvMesh& mesh = refCast<const fvMesh>(obr_);
-        
-        FieldValueExpressionDriver driver(
-            mesh.time().timeName(),
-            mesh.time(),
-            mesh,
-            false, // no caching. No need
-            true,  // search fields in memory
-            false  // don't look up files in memory
-        );
+        FieldValueExpressionDriver &driver=driver_();
 
-        driver.parse(expression_);
+        driver.clearVariables();
 
-        FieldValueExpressionDriver ldriver(
-            mesh.time().timeName(),
-            mesh.time(),
-            mesh,
-            false, // no caching. No need
-            true,  // search fields in memory
-            false  // don't look up files in memory
-        );
+        driver.parse(maskExpression_);
 
-        ldriver.parse(maskExpression_);
-
-        if(!ldriver.resultIsLogical()) {
+        if(!driver.resultIsLogical()) {
             FatalErrorIn("manipulateField::execute()")
                 << maskExpression_ << " does not evaluate to a logical expression"
                     << endl
                     << abort(FatalError);
         }
 
+        volScalarField conditionField(driver.getScalar());
+
+        driver.parse(expression_);
+
         if(driver.resultIsVector()) {
             manipulate(
                 driver.getVector(),
-                ldriver.getScalar()
+                conditionField
             );
             
         } else if(driver.resultIsScalar()) {
             manipulate(
                 driver.getScalar(),
-                ldriver.getScalar()
+                conditionField
             );
         } else {
             WarningIn("Foam::manipulateField::execute()")

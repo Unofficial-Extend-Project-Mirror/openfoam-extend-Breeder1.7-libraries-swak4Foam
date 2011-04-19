@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: expressionField.C,v bf831db01a43 2010-09-07 21:41:01Z bgschaid $ 
+//  OF-extend Revision: $Id: expressionField.C,v af79d48de2f3 2011-04-09 16:35:12Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -42,7 +42,8 @@ Foam::expressionField::expressionField
 )
 :
     active_(true),
-    obr_(obr)
+    obr_(obr),
+    dict_(dict)
 {
     if (!isA<fvMesh>(obr_))
     {
@@ -88,22 +89,30 @@ void Foam::expressionField::read(const dictionary& dict)
         name_=word(dict.lookup("fieldName"));
         expression_=string(dict.lookup("expression"));
         autowrite_=Switch(dict.lookup("autowrite"));
+
+        const fvMesh& mesh = refCast<const fvMesh>(obr_);
+        
+        driver_.set(
+            new FieldValueExpressionDriver(
+                mesh.time().timeName(),
+                mesh.time(),
+                mesh,
+                false, // no caching. No need
+                true,  // search fields in memory
+                false  // don't look up files in memory
+            )
+        );
+
+        driver_->readVariablesAndTables(dict_);
     }
 }
 
 void Foam::expressionField::execute()
 {
     if(active_) {
-        const fvMesh& mesh = refCast<const fvMesh>(obr_);
-        
-        FieldValueExpressionDriver driver(
-            mesh.time().timeName(),
-            mesh.time(),
-            mesh,
-            false, // no caching. No need
-            true,  // search fields in memory
-            false  // don't look up files in memory
-        );
+        FieldValueExpressionDriver &driver=driver_();
+
+        driver.clearVariables();
 
         driver.parse(expression_);
 

@@ -1,4 +1,4 @@
-//  ICE Revision: $Id: FieldValueExpressionDriverLogicalTemplates.H,v a70c9076715e 2010-08-31 21:51:43Z bgschaid $ 
+//  ICE Revision: $Id: FieldValueExpressionDriverLogicalTemplates.H,v 475db83e8611 2011-03-19 12:28:54Z bgschaid $ 
 
 #ifndef VALUE_EXPRESSION_LOGICAL_TEMPLATES
 #define VALUE_EXPRESSION_LOGICAL_TEMPLATES
@@ -8,13 +8,13 @@ namespace Foam {
 template<>
 volScalarField *FieldValueExpressionDriver::makeLogicalField<volScalarField>(scalar val)
 {
-    return makeScalarField(val);
+    return makeConstantField<volScalarField>(val);
 }
 
 template<>
 surfaceScalarField *FieldValueExpressionDriver::makeLogicalField<surfaceScalarField>(scalar val)
 {
-    return makeSurfaceScalarField(val);
+    return makeConstantField<surfaceScalarField>(val);
 }
 
 #define getFaceValue(ding) (ding->boundaryField()[pI][fI])

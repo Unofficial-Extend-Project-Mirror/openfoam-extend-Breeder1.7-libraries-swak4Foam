@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id$ 
+//  OF-extend Revision: $Id: expressionFaField.C,v 5a312d50a849 2011-04-09 23:55:13Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -42,7 +42,8 @@ Foam::expressionFaField::expressionFaField
 )
 :
     active_(true),
-    obr_(obr)
+    obr_(obr),
+    dict_(dict)
 {
     if (!isA<fvMesh>(obr_))
     {
@@ -88,20 +89,28 @@ void Foam::expressionFaField::read(const dictionary& dict)
         name_=word(dict.lookup("fieldName"));
         expression_=string(dict.lookup("expression"));
         autowrite_=Switch(dict.lookup("autowrite"));
+
+        const fvMesh& mesh = refCast<const fvMesh>(obr_);
+        
+        driver_.set(
+            new FaFieldValueExpressionDriver(
+                mesh,
+                false, // no caching. No need
+                true,  // search fields in memory
+                false  // don't look up files in memory
+            )
+        );
+        
+        driver_->readVariablesAndTables(dict_);
     }
 }
 
 void Foam::expressionFaField::execute()
 {
     if(active_) {
-        const fvMesh& mesh = refCast<const fvMesh>(obr_);
-        
-        FaFieldValueExpressionDriver driver(
-            mesh,
-            false, // no caching. No need
-            true,  // search fields in memory
-            false  // don't look up files in memory
-        );
+        FaFieldValueExpressionDriver &driver=driver_();
+
+        driver.clearVariables();
 
         driver.parse(expression_);
 
