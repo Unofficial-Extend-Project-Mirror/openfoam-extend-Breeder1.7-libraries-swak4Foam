@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: CellSetValueExpressionDriverI.H,v 47e5b59b8aa6 2010-10-24 12:33:56Z bgschaid $ 
+ ICE Revision: $Id: CellSetValueExpressionDriverI.H,v 4dec67367ae3 2011-05-08 12:35:42Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -43,7 +43,7 @@ License
 namespace Foam {
     label CellSetValueExpressionDriver::size() const
     {
-        return cellSet_.size();
+        return cellSet_->size();
     }
 
     label CellSetValueExpressionDriver::pointSize() const
@@ -54,8 +54,8 @@ namespace Foam {
 
     const fvMesh &CellSetValueExpressionDriver::mesh() const
     {
-        return dynamic_cast<const fvMesh&>(cellSet_.db());
-        //        return dynamicCast<const fvMesh&>(cellSet_.db()); // doesn't wor with gcc 4.2
+        return dynamic_cast<const fvMesh&>(cellSet_->db());
+        //        return dynamicCast<const fvMesh&>(cellSet_->db()); // doesn't wor with gcc 4.2
     }
 
 }

@@ -28,10 +28,10 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: SubsetValueExpressionDriver.C,v 4dec67367ae3 2011-05-08 12:35:42Z bgschaid $ 
+ ICE Revision: $Id$ 
 \*---------------------------------------------------------------------------*/
 
-#include "SubsetValueExpressionDriver.H"
+#include "SetSubsetValueExpressionDriver.H"
 
 #include "Random.H"
 
@@ -39,7 +39,7 @@ namespace Foam {
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
-defineTypeNameAndDebug(SubsetValueExpressionDriver, 0);
+defineTypeNameAndDebug(SetSubsetValueExpressionDriver, 0);
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
@@ -47,82 +47,44 @@ defineTypeNameAndDebug(SubsetValueExpressionDriver, 0);
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
 
-SubsetValueExpressionDriver::SubsetValueExpressionDriver(const SubsetValueExpressionDriver& orig)
+SetSubsetValueExpressionDriver::SetSubsetValueExpressionDriver(const SetSubsetValueExpressionDriver& orig)
 :
-    CommonValueExpressionDriver(orig),
-    autoInterpolate_(orig.autoInterpolate_),
-    warnAutoInterpolate_(orig.warnAutoInterpolate_)
+    SubsetValueExpressionDriver(orig),
+    id_(orig.id_),
+    origin_(orig.origin_)
 {}
 
-SubsetValueExpressionDriver::SubsetValueExpressionDriver(const dictionary& dict)
+SetSubsetValueExpressionDriver::SetSubsetValueExpressionDriver(
+    const dictionary& dict,
+    const word &id,
+    const SetOrigin origin
+)
 :
-    CommonValueExpressionDriver(dict),
-    autoInterpolate_(dict.lookupOrDefault("autoInterpolate",false)),
-    warnAutoInterpolate_(dict.lookupOrDefault("warnAutoInterpolate",true))
+    SubsetValueExpressionDriver(dict),
+    id_(id),
+    origin_(origin)
 {}
 
-SubsetValueExpressionDriver::SubsetValueExpressionDriver(
+SetSubsetValueExpressionDriver::SetSubsetValueExpressionDriver(
+        const word &id,
+        const SetOrigin origin,
         bool autoInterpolate,
         bool warnAutoInterpolate
 )
 :
-    CommonValueExpressionDriver(),
-    autoInterpolate_(autoInterpolate),
-    warnAutoInterpolate_(warnAutoInterpolate)
+    SubsetValueExpressionDriver(autoInterpolate,warnAutoInterpolate),
+    id_(id),
+    origin_(origin)
 {}
 
 // * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
 
-SubsetValueExpressionDriver::~SubsetValueExpressionDriver()
+SetSubsetValueExpressionDriver::~SetSubsetValueExpressionDriver()
 {}
 
 
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
-void SubsetValueExpressionDriver::parse (const std::string& f)
-{
-    content_ = f;
-    scan_begin ();
-    parserSubset::SubsetValueExpressionParser parser (*this);
-    parser.set_debug_level (trace_parsing_);
-    parser.parse ();
-    scan_end ();
-}
-
-scalarField *SubsetValueExpressionDriver::makeIdField()
-{
-    scalarField *ids=new scalarField(this->size());
-    forAll(*ids,i) {
-        (*ids)[i]=i;
-    }
-    return ids;
-}
-
-vectorField *SubsetValueExpressionDriver::makePositionField()
-{
-    notImplemented("SubsetValueExpressionDriver::makePositionField");
-
-    return new vectorField(0);
-}
-
-// vectorField *SubsetValueExpressionDriver::makePointField()
-// {
-//     notImplemented("SubsetValueExpressionDriver::makePointField");
-// }
-
-vectorField *SubsetValueExpressionDriver::makeFaceNormalField()
-{
-    notImplemented("SubsetValueExpressionDriver::makeFaceNormalField");
-
-    return new vectorField(0);
-}
-
-vectorField *SubsetValueExpressionDriver::makeFaceAreaField()
-{
-    notImplemented("SubsetValueExpressionDriver::makeFaceAreaField");
-
-    return new vectorField(0);
-}
 
 // ************************************************************************* //
 

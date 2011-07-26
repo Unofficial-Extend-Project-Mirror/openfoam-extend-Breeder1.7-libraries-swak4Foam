@@ -49,6 +49,7 @@
 %union
 {
     Foam::scalar val;
+    Foam::label integer;
     Foam::vector *vec;
     Foam::string *name;
     Foam::string *vname;
@@ -74,6 +75,7 @@
 %token <fsname> TOKEN_FSID  "faceScalarID"
 %token <fvname> TOKEN_FVID  "faceVectorID"
 %token <val>    TOKEN_NUM   "number"
+%token <integer>    TOKEN_INT   "integer"
 %token <vec>    TOKEN_VEC   "vector"
 %type  <val>    scalar      "sexpression"  
 %type  <sfield>    exp        "expression"
@@ -92,9 +94,11 @@
 
 %token TOKEN_pi
 %token TOKEN_rand
+%token TOKEN_randFixed
 %token TOKEN_id
 %token TOKEN_cpu
 %token TOKEN_randNormal
+%token TOKEN_randNormalFixed
 %token TOKEN_position
 %token TOKEN_fposition
 %token TOKEN_fprojection
@@ -168,7 +172,7 @@
 %printer             { debug_stream () << *$$; } "scalarID" "vectorID" "faceScalarID" "faceVectorID" 
 %printer             { Foam::OStringStream buff; buff << *$$; debug_stream () << buff.str().c_str(); } "vector"
 %destructor          { delete $$; } "timeline" "lookup" "scalarID" "faceScalarID" "faceVectorID" "vectorID" "vector" "expression" "vexpression" "fsexpression" "fvexpression" "lexpression" "flexpression"  
-%printer             { debug_stream () << $$; } "number"  "sexpression"
+%printer             { debug_stream () << $$; } "number"  "sexpression" "integer"
 %printer             { debug_stream () << $$->name().c_str(); } "expression"  "vexpression" "lexpression" "flexpression" "fsexpression" "fvexpression"
 
 
@@ -195,6 +199,8 @@ vexp:   vector                                    { $$ = $1; }
         | TOKEN_faceAverage '(' fvexp ')'         { $$ = new Foam::areaVectorField(Foam::fac::average(*$3)); delete $3; }
         | TOKEN_integrate '(' fvexp ')'           { $$ = new Foam::areaVectorField(Foam::fac::edgeIntegrate(*$3)); delete $3; }
         | TOKEN_surfSum '(' fvexp ')'             { $$ = new Foam::areaVectorField(Foam::fac::edgeSum(*$3)); delete $3; }
+        | TOKEN_min '(' vexp ',' vexp  ')'        { $$ = Foam::min(*$3,*$5).ptr(); delete $3; delete $5; }
+        | TOKEN_max '(' vexp ',' vexp  ')'        { $$ = Foam::max(*$3,*$5).ptr(); delete $3; delete $5; }
         | TOKEN_min '(' vexp ')'                 { $$ = driver.makeConstantField<Foam::areaVectorField>(Foam::min(*$3).value()); delete $3; }
         | TOKEN_max '(' vexp ')'                 { $$ = driver.makeConstantField<Foam::areaVectorField>(Foam::max(*$3).value()); delete $3; }
         | TOKEN_sum '(' vexp ')'                 { $$ = driver.makeConstantField<Foam::areaVectorField>(Foam::sum(*$3).value()); delete $3; }
@@ -238,6 +244,8 @@ fsexp:  TOKEN_surf '(' scalar ')'           { $$ = driver.makeConstantField<Foam
         | TOKEN_sign '(' fsexp ')'          { $$ = new Foam::edgeScalarField(Foam::sign(*$3)); delete $3; }
         | TOKEN_pos '(' fsexp ')'           { $$ = new Foam::edgeScalarField(Foam::pos(*$3)); delete $3; }
         | TOKEN_neg '(' fsexp ')'           { $$ = new Foam::edgeScalarField(Foam::neg(*$3)); delete $3; }
+        | TOKEN_min '(' fsexp ',' fsexp  ')'        { $$ = Foam::min(*$3,*$5).ptr(); delete $3; delete $5; }
+        | TOKEN_max '(' fsexp ',' fsexp  ')'        { $$ = Foam::max(*$3,*$5).ptr(); delete $3; delete $5; }
         | TOKEN_min '(' fsexp ')'           { $$ = driver.makeConstantField<Foam::edgeScalarField>(Foam::min(*$3).value()); delete $3; }
         | TOKEN_max '(' fsexp ')'           { $$ = driver.makeConstantField<Foam::edgeScalarField>(Foam::max(*$3).value()); delete $3; }
         | TOKEN_sum '(' fsexp ')'           { $$ = driver.makeConstantField<Foam::edgeScalarField>(Foam::sum(*$3).value()); delete $3; }
@@ -271,6 +279,8 @@ fvexp:  fvector                            { $$ = $1; }
         | TOKEN_face '(' ')'               { $$ = driver.makeEdgeField(); }
         | TOKEN_lnGrad '(' vexp ')'        { $$ = new Foam::edgeVectorField(Foam::fac::lnGrad(*$3)); delete $3; }
         | TOKEN_interpolate '(' vexp ')'   { $$ = new Foam::edgeVectorField(Foam::fac::interpolate(*$3)); delete $3; }
+        | TOKEN_min '(' fvexp ',' fvexp  ')'        { $$ = Foam::min(*$3,*$5).ptr(); delete $3; delete $5; }
+        | TOKEN_max '(' fvexp ',' fvexp  ')'        { $$ = Foam::max(*$3,*$5).ptr(); delete $3; delete $5; }
         | TOKEN_min '(' fvexp ')'          { $$ = driver.makeConstantField<Foam::edgeVectorField>(Foam::min(*$3).value()); delete $3; }
         | TOKEN_max '(' fvexp ')'          { $$ = driver.makeConstantField<Foam::edgeVectorField>(Foam::max(*$3).value()); delete $3; }
         | TOKEN_sum '(' fvexp ')'          { $$ = driver.makeConstantField<Foam::edgeVectorField>(Foam::sum(*$3).value()); delete $3; }
@@ -319,6 +329,8 @@ exp:    TOKEN_NUM                                  { $$ = driver.makeConstantFie
         | TOKEN_sign '(' exp ')'                   { $$ = new Foam::areaScalarField(Foam::sign(*$3)); delete $3; }
         | TOKEN_pos '(' exp ')'                    { $$ = new Foam::areaScalarField(Foam::pos(*$3)); delete $3; }
         | TOKEN_neg '(' exp ')'                    { $$ = new Foam::areaScalarField(Foam::neg(*$3)); delete $3; }
+        | TOKEN_min '(' exp ',' exp  ')'        { $$ = Foam::min(*$3,*$5).ptr(); delete $3; delete $5; }
+        | TOKEN_max '(' exp ',' exp  ')'        { $$ = Foam::max(*$3,*$5).ptr(); delete $3; delete $5; }
         | TOKEN_min '(' exp ')'                    { $$ = driver.makeConstantField<Foam::areaScalarField>(Foam::min(*$3).value()); delete $3; }
         | TOKEN_max '(' exp ')'                    { $$ = driver.makeConstantField<Foam::areaScalarField>(Foam::max(*$3).value()); delete $3; }
         | TOKEN_sum '(' exp ')'                    { $$ = driver.makeConstantField<Foam::areaScalarField>(Foam::sum(*$3).value()); delete $3; }
@@ -343,6 +355,12 @@ exp:    TOKEN_NUM                                  { $$ = driver.makeConstantFie
         | TOKEN_area '(' ')'                       { $$ = driver.makeAreaField(); }
         | TOKEN_rand '(' ')'                       { $$ = driver.makeRandomField(); }
         | TOKEN_randNormal '(' ')'                 { $$ = driver.makeGaussRandomField(); }
+        | TOKEN_rand '(' TOKEN_INT ')'             { $$ = driver.makeRandomField(-$3); }
+        | TOKEN_randNormal '('  TOKEN_INT ')'      { $$ = driver.makeGaussRandomField(-$3); }
+        | TOKEN_randFixed '(' ')'                  { $$ = driver.makeRandomField(1); }
+        | TOKEN_randNormalFixed '(' ')'            { $$ = driver.makeGaussRandomField(1); }
+        | TOKEN_randFixed '(' TOKEN_INT ')'        { $$ = driver.makeRandomField($3+1); }
+        | TOKEN_randNormalFixed '('  TOKEN_INT ')' { $$ = driver.makeGaussRandomField($3+1); }
         | TOKEN_id '(' ')'                         { $$ = driver.makeCellIdField(); }
         | TOKEN_cpu'(' ')'                         { $$ = driver.makeConstantField<Foam::areaScalarField>(Foam::Pstream::myProcNo()); }
         | TOKEN_deltaT '(' ')'                     { $$ = driver.makeConstantField<Foam::areaScalarField>(driver.runTime().deltaT().value()); }

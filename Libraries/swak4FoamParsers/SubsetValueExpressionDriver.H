@@ -37,7 +37,7 @@ SourceFiles
     SubsetValueExpressionDriverI.H
     SubsetValueExpressionDriver.C
 
- ICE Revision: $Id: SubsetValueExpressionDriver.H,v c5229f0dd09c 2010-09-24 13:54:17Z bgschaid $ 
+ ICE Revision: $Id: SubsetValueExpressionDriver.H,v 4dec67367ae3 2011-05-08 12:35:42Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef SubsetValueExpressionDriver_H
@@ -106,6 +106,9 @@ protected:
     template<class Subset,class T>
     Field<T> *getFromFieldInternal(const Field<T> &original,const Subset &sub);
 public:
+
+     //- Runtime type information
+    TypeName("SubsetValueExpressionDriver");
 
     // Constructors
 

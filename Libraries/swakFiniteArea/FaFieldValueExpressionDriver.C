@@ -1,4 +1,4 @@
-//  ICE Revision: $Id: FaFieldValueExpressionDriver.C,v 942e8def1dae 2011-03-19 16:24:43Z bgschaid $ 
+//  ICE Revision: $Id: FaFieldValueExpressionDriver.C,v ffdd04ede247 2011-07-13 19:42:13Z bgschaid $ 
 
 #include "FaFieldValueExpressionDriver.H"
 #include <Random.H>
@@ -144,14 +144,12 @@ areaScalarField *FaFieldValueExpressionDriver::makeModuloField(
     return result_;
 }
 
-areaScalarField *FaFieldValueExpressionDriver::makeRandomField()
+areaScalarField *FaFieldValueExpressionDriver::makeRandomField(label seed)
 {
     areaScalarField *f=makeConstantField<areaScalarField>(0.);
-    Random rand(65);
 
-    forAll(*f,cellI) {
-        (*f)[cellI]=rand.scalar01();
-    }
+    autoPtr<scalarField> rField(CommonValueExpressionDriver::makeRandomField(seed));
+    f->internalField()=rField();
 
     return f;
 }
@@ -167,14 +165,12 @@ areaScalarField *FaFieldValueExpressionDriver::makeCellIdField()
     return f;
 }
 
-areaScalarField *FaFieldValueExpressionDriver::makeGaussRandomField()
+areaScalarField *FaFieldValueExpressionDriver::makeGaussRandomField(label seed)
 {
     areaScalarField *f=makeConstantField<areaScalarField>(0.);
-    Random rand(65);
 
-    forAll(*f,cellI) {
-        (*f)[cellI]=rand.GaussNormal();
-    }
+    autoPtr<scalarField> rField(CommonValueExpressionDriver::makeGaussRandomField(seed));
+    f->internalField()=rField();
 
     return f;
 }

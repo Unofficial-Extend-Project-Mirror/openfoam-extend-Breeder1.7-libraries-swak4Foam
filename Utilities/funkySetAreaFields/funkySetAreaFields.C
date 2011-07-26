@@ -33,7 +33,7 @@ Application
 
 Description
 
- ICE Revision: $Id: funkySetAreaFields.C,v b89b5f08c434 2011-03-25 16:46:23Z bgschaid $ 
+ ICE Revision: $Id: funkySetAreaFields.C,v e156113c9811 2011-07-12 15:37:46Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
@@ -55,7 +55,8 @@ void setField
     const dimensionSet &dim,
     bool keepPatches,
     const wordList &valuePatches,
-    bool createVolumeField
+    bool createVolumeField,
+    bool noWrite
 ) {
     dimensioned<T> init("nix",dim,pTraits<T>::zero);
     typedef GeometricField<T,faPatchField,areaMesh> aField;
@@ -110,9 +111,11 @@ void setField
 
     Info << " Setting " << setCells << " of " << totalCells << " cells" << endl;
 
-    Info << " Writing to " << name << endl;
-
-    tmp->write();
+    if(!noWrite) {
+        Info << " Writing to " << name << endl;
+        
+        tmp->write();
+    }
 
     if(createVolumeField) {
         word vName(name+"Volume");
@@ -154,7 +157,8 @@ void doAnExpression
     const dimensionSet &dim,
     bool keepPatches,
     const wordList &valuePatches,
-    bool createVolumeField
+    bool createVolumeField,
+    bool noWrite
 ) {
     const string &time = runTime.timeName();
     bool isScalar=false;
@@ -171,9 +175,9 @@ void doAnExpression
         f.headerOk();
         
         word classN=f.headerClassName();
-        if(classN=="volScalarField") {
+        if(classN=="areaScalarField") {
             isScalar=true;
-        } else if (classN!="volVectorField") {
+        } else if (classN!="areaVectorField") {
             FatalErrorIn("doAnExpression()")
                 //            << args.executable()
                 << " unsupported type " << classN << " of field " 
@@ -259,7 +263,8 @@ void doAnExpression
                 dim,
                 keepPatches,
                 valuePatches,
-                createVolumeField
+                createVolumeField,
+                noWrite
             );
         } else {
 	  setField(
@@ -272,7 +277,8 @@ void doAnExpression
               dim,
               keepPatches,
               valuePatches,
-              createVolumeField
+              createVolumeField,
+              noWrite
           );
         }
     }
@@ -296,9 +302,10 @@ int main(int argc, char *argv[])
     argList::validOptions.insert("noCacheVariables","");
     argList::validOptions.insert("create","");
     argList::validOptions.insert("createVolumeField","");
+    argList::validOptions.insert("onlyVolumeField","");
     argList::validOptions.insert("keepPatches","");
     argList::validOptions.insert("valuePatches","<list of patches that get a fixed value>");
-    argList::validOptions.insert("dictExt","<extension to the default funkySetFieldsDict-dictionary>");
+    argList::validOptions.insert("dictExt","<extension to the default funkySetAreaFieldsDict-dictionary>");
 
 #   include "setRootCase.H"
 
@@ -373,6 +380,14 @@ int main(int argc, char *argv[])
 
             dictionary dummyDict;
 
+            bool createVolumeField=(
+                args.options().found("createVolumeField")
+                ||
+                args.options().found("onlyVolumeField")
+            );
+
+            bool noWrite=args.options().found("onlyVolumeField");
+
             doAnExpression(
                 mesh,
                 field,
@@ -386,10 +401,11 @@ int main(int argc, char *argv[])
                 dim,
                 keepPatches,
                 valuePatches,
-                args.options().found("createVolumeField")
+                createVolumeField,
+                noWrite
             );
         } else {
-            Info << " Using funkySetFieldsDict \n" << endl;
+            Info << " Using funkySetAreaFieldsDict \n" << endl;
         
             if(
                 args.options().found("keepPatches") 
@@ -406,11 +422,11 @@ int main(int argc, char *argv[])
             ) {
                 FatalErrorIn("main()")
                     << args.executable()
-                        << ": No other options than -time valid when using funkySetFieldsDict"
+                        << ": No other options than -time valid when using funkySetAreaFieldsDict"
                         << exit(FatalError);
             }
 
-            word dictName="funkySetFieldsDict";
+            word dictName="funkySetAreaFieldsDict";
 
             if(args.options().found("region")) {                
                 dictName+="."+args.options()["region"];
@@ -476,6 +492,14 @@ int main(int argc, char *argv[])
                     valuePatches=wordList(part.lookup("valuePatches"));
                 }
 
+                bool createVolumeField=(
+                    args.options().found("createVolumeField")
+                    ||
+                    args.options().found("onlyVolumeField")
+                );
+
+                bool noWrite=args.options().found("onlyVolumeField");
+
                 doAnExpression(
                     mesh,
                     field,
@@ -488,7 +512,8 @@ int main(int argc, char *argv[])
                     dim,
                     keepPatches,
                     valuePatches,
-                    args.options().found("createVolumeField")
+                    createVolumeField,
+                    noWrite
                 );
             }
         }

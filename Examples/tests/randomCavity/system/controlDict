@@ -11,50 +11,42 @@ FoamFile
     format      ascii;
     class       dictionary;
     location    "system";
-    object      fvSchemes;
+    object      controlDict;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-ddtSchemes
-{
-    default         Euler;
-}
+application     icoFoam;
 
-gradSchemes
-{
-    default         Gauss linear;
-}
+startFrom       startTime;
 
-divSchemes
-{
-    div(rho*phi,U)  Gauss limitedLinearV 1;
-    div(phi,alpha)  Gauss vanLeer;
-    div(phirb,alpha) Gauss interfaceCompression;
-}
+startTime       0;
 
-laplacianSchemes
-{
-    default         Gauss linear corrected;
-}
+stopAt          endTime;
 
-interpolationSchemes
-{
-    default         linear;
-}
+endTime         0.5;
 
-snGradSchemes
-{
-    default         corrected;
-}
+deltaT          0.005;
 
-fluxRequired
-{
-    default         no;
-    p_rgh;
-    pd;
-    pcorr;
-    alpha1;
-}
+writeControl    timeStep;
 
+writeInterval   20;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  6;
+
+writeCompression compressed;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable yes;
+
+libs (
+    "libgroovyBC.so"
+);
 
 // ************************************************************************* //

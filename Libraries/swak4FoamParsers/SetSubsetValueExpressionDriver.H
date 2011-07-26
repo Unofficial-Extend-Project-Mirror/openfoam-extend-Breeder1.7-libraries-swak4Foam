@@ -29,121 +29,77 @@ License
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 Class
-    Foam::CellSetValueExpressionDriver
+    Foam::SetSubsetValueExpressionDriver
 
 Description
 
 SourceFiles
-    CellSetValueExpressionDriverI.H
-    CellSetValueExpressionDriver.C
+    SetSubsetValueExpressionDriverI.H
+    SetSubsetValueExpressionDriver.C
 
- ICE Revision: $Id: CellSetValueExpressionDriver.H,v 5c09ed50ab2c 2011-05-08 19:21:51Z bgschaid $ 
+ ICE Revision: $Id$ 
 \*---------------------------------------------------------------------------*/
 
-#ifndef CellSetValueExpressionDriver_H
-#define CellSetValueExpressionDriver_H
-
-#include "volFields.H"
-
-#include "cellSet.H"
+#ifndef SetSubsetValueExpressionDriver_H
+#define SetSubsetValueExpressionDriver_H
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include "SetSubsetValueExpressionDriver.H"
+#include "SubsetValueExpressionDriver.H"
 
 namespace Foam
 {
 
 /*---------------------------------------------------------------------------*\
-                           Class CellSetValueExpressionDriver Declaration
+                           Class SetSubsetValueExpressionDriver Declaration
 \*---------------------------------------------------------------------------*/
 
-class CellSetValueExpressionDriver
+class SetSubsetValueExpressionDriver
 :
-    public SetSubsetValueExpressionDriver
+    public SubsetValueExpressionDriver
 {
-    // Private data
-
-    autoPtr<cellSet> cellSet_;
-
     // Private Member Functions
 
 protected:
 
-    //- update stuff that needs updating
-    virtual bool update();
+    const word id_;
+
+    SetOrigin origin_;
 
 public:
 
      //- Runtime type information
-    TypeName("CellSetValueExpressionDriver");
+    TypeName("SetSubsetValueExpressionDriver");
 
-   // Constructors
+    // Constructors
 
     //- Construct from components
-    CellSetValueExpressionDriver(const cellSet &);
-    
-    //- Construct from a dictionary
-    CellSetValueExpressionDriver(const dictionary& dict,const fvMesh&mesh);
-    
-    //- Construct from an id
-    CellSetValueExpressionDriver(const word& id,const fvMesh&mesh);
+    SetSubsetValueExpressionDriver(
+        const word &id,
+        const SetOrigin origin,
+        bool autoInterpolate=false,
+        bool warnAutoInterpolate=true
+    );
     
     //- Copy construct
-    CellSetValueExpressionDriver(const cellSet &,const CellSetValueExpressionDriver&);
+    SetSubsetValueExpressionDriver(const SetSubsetValueExpressionDriver&);
+
+    //- Copy from a dictionary
+    SetSubsetValueExpressionDriver(
+        const dictionary&,
+        const word &id,
+        const SetOrigin origin
+    );
 
     // Destructor
 
-    ~CellSetValueExpressionDriver();
+    ~SetSubsetValueExpressionDriver();
 
 
     // Member Functions
 
-    virtual vectorField *makePositionField();
 
-    virtual scalarField *makeFaceAreaMagField();
-
-    virtual scalarField *makeCellVolumeField();
-
-    //     virtual vectorField *makePointField()=0;
-
-    virtual scalarField *makeFaceFlipField();
-
-    virtual vectorField *makeFaceNormalField();
-
-    virtual vectorField *makeFaceAreaField();
-
-//     template<class Type>
-//     Field<Type> *getField(const string &name);
-
-    virtual bool isCell() { return true; }
-
-    virtual Field<scalar> *getScalarField(const string &name);
-
-    virtual Field<vector> *getVectorField(const string &name);
-
-    virtual Field<tensor> *getTensorField(const string &name);
-
-    virtual Field<symmTensor> *getSymmTensorField(const string &name);
-
-    virtual Field<sphericalTensor> *getSphericalTensorField(const string &name);
-
-    // Handling the parser
-    //    void parse(const std::string& f);
-
-    inline virtual label size() const;
-
-    inline virtual label pointSize() const;
-
-    inline virtual const fvMesh &mesh() const;
-
-//     template<class Type>
-//     virtual Field<Type> *toFace(const Field<Type> &)=0;
-
-//     template<class Type>
-//     virtual Field<Type> *toPoint(const Field<Type> &)=0;
 };
-
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -151,7 +107,7 @@ public:
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include "CellSetValueExpressionDriverI.H"
+#include "SetSubsetValueExpressionDriverI.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

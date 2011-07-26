@@ -37,7 +37,7 @@ SourceFiles
     FaceSetValueExpressionDriverI.H
     FaceSetValueExpressionDriver.C
 
- ICE Revision: $Id: FaceSetValueExpressionDriver.H,v a73015ccbed3 2010-12-14 18:36:40Z bgschaid $ 
+ ICE Revision: $Id: FaceSetValueExpressionDriver.H,v 5c09ed50ab2c 2011-05-08 19:21:51Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef FaceSetValueExpressionDriver_H
@@ -49,7 +49,7 @@ SourceFiles
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include "SubsetValueExpressionDriver.H"
+#include "SetSubsetValueExpressionDriver.H"
 
 namespace Foam
 {
@@ -60,12 +60,17 @@ namespace Foam
 
 class FaceSetValueExpressionDriver
 :
-    public SubsetValueExpressionDriver
+    public SetSubsetValueExpressionDriver
 {
     // Private data
-    faceSet faceSet_;
+    autoPtr<faceSet> faceSet_;
 
     // Private Member Functions
+
+protected:
+
+    //- update stuff that needs updating
+    virtual bool update();
 
 public:
 

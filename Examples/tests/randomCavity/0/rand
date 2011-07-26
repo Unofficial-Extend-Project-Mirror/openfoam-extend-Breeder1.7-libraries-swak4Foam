@@ -9,52 +9,35 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       dictionary;
-    location    "system";
-    object      fvSchemes;
+    class       volScalarField;
+    object      rand;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-ddtSchemes
-{
-    default         Euler;
-}
+dimensions      [0 0 0 0 0 0 0];
 
-gradSchemes
-{
-    default         Gauss linear;
-}
+internalField   uniform 0;
 
-divSchemes
+boundaryField
 {
-    div(rho*phi,U)  Gauss limitedLinearV 1;
-    div(phi,alpha)  Gauss vanLeer;
-    div(phirb,alpha) Gauss interfaceCompression;
-}
+    movingWall      
+    {
+        type            groovyBC;
+        value           uniform 0;
+        valueExpression "rand()*10-5";
+    }
 
-laplacianSchemes
-{
-    default         Gauss linear corrected;
-}
+    fixedWalls      
+    {
+        type            groovyBC;
+        value           uniform 0;
+        valueExpression "rand(42)*10-5";
+    }
 
-interpolationSchemes
-{
-    default         linear;
+    frontAndBack    
+    {
+        type            empty;
+    }
 }
-
-snGradSchemes
-{
-    default         corrected;
-}
-
-fluxRequired
-{
-    default         no;
-    p_rgh;
-    pd;
-    pcorr;
-    alpha1;
-}
-
 
 // ************************************************************************* //

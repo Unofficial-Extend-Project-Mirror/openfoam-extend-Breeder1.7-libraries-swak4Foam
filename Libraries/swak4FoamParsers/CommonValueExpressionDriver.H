@@ -37,7 +37,7 @@ SourceFiles
     CommonValueExpressionDriverI.H
     CommonValueExpressionDriver.C
 
- ICE Revision: $Id: CommonValueExpressionDriver.H,v 653817d13eb8 2011-04-08 20:58:57Z bgschaid $ 
+ ICE Revision: $Id: CommonValueExpressionDriver.H,v 350a8c69a7e2 2011-05-26 22:34:49Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef CommonValueExpressionDriver_H
@@ -150,12 +150,25 @@ protected:
     template<class T>
     inline tmp<T> readAndRegister(const word &name);
 
+    enum SetOrigin {
+        NEW,
+        FILE,
+        MEMORY,
+        CACHE,
+        INVALID
+    };
+
     template<class T>
-    inline autoPtr<T> getSet(const fvMesh &,const word &);
+    inline autoPtr<T> getSet(const fvMesh &,const word &,SetOrigin &origin);
+
+    template<class T>
+    inline bool updateSet(autoPtr<T> &theSet,const word &,SetOrigin origin);
 
     template<class T>
     autoPtr<T> getOrReadField(const string &name,bool failIfNoneFound=true);
 
+    template<class T>
+    inline void correctField(T &f) const;
 public:
     //- Runtime type information
     TypeName("CommonValueExpressionDriver");

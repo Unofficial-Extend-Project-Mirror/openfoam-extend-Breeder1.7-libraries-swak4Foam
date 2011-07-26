@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: SubsetValueExpressionDriverI.H,v 680e017e1228 2011-03-16 21:46:11Z bgschaid $ 
+ ICE Revision: $Id: SubsetValueExpressionDriverI.H,v 4dec67367ae3 2011-05-08 12:35:42Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -45,14 +45,32 @@ namespace Foam {
     template<class FieldType,class Subset,class T>
     Field<T> *SubsetValueExpressionDriver::getFieldInternal(const string &name,const Subset &sub)
     {
+        if(debug) {
+            Info << "SubsetValueExpressionDriver::getFieldInternal"
+                << " searching for " << name << " Type: " << Subset::typeName
+                << endl;
+        }
+
         if(this->variables_.found(name)) {
+            if(debug) {
+                Info << name << " is a variable" << endl;
+            }
             return this->variables_[name].getResult<T>(true).ptr();
         }
 
         Field<T> *result=new Field<T>(this->size());
         label cnt=0;
         
+        if(debug) {
+            Info << "searchInMemory: " << this->searchInMemory()
+                << " found: " << this->mesh().foundObject<FieldType>(name)
+                << endl;
+        }
+
         if(this->searchInMemory() && this->mesh().foundObject<FieldType>(name)) {
+            if(debug) {
+                Info << name << " was found in memory" << endl;
+            }
             // Keep this separate to avoid copying if found in memory
             const FieldType &f=this->mesh().lookupObject<FieldType>(name);
             
@@ -61,6 +79,9 @@ namespace Foam {
                 cnt++;
             }
         } else {
+            if(debug) {
+                Info << name << " was found on disc" << endl;
+            }
             // otherwise try disc and memory
             autoPtr<FieldType> f=this->getOrReadField<FieldType>(name);
 

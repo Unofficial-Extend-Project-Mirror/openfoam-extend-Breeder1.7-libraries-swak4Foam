@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: CommonValueExpressionDriver.C,v b44e1a357d2b 2011-04-09 14:20:35Z bgschaid $ 
+ ICE Revision: $Id: CommonValueExpressionDriver.C,v 05061298d53f 2011-07-12 23:49:01Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "CommonValueExpressionDriver.H"
@@ -447,7 +447,7 @@ scalarField *CommonValueExpressionDriver::makeRandomField(label seed)
     scalarField *result=new scalarField(this->size());
 
     if(seed<=0) {
-        seed=runTime().timeIndex();
+        seed=runTime().timeIndex()-seed;
     }
 
     Foam::Random rand(seed);
@@ -485,7 +485,7 @@ scalarField *CommonValueExpressionDriver::makeGaussRandomField(label seed)
     scalarField *result=new scalarField(this->size());
 
     if(seed<=0) {
-        seed=runTime().timeIndex();
+        seed=runTime().timeIndex()-seed;
     }
 
     Foam::Random rand(seed);

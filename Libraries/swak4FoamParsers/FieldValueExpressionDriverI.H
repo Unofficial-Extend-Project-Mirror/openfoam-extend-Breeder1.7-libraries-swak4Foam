@@ -1,4 +1,4 @@
-//  ICE Revision: $Id: FieldValueExpressionDriverI.H,v 475db83e8611 2011-03-19 12:28:54Z bgschaid $ 
+//  ICE Revision: $Id: FieldValueExpressionDriverI.H,v 350a8c69a7e2 2011-05-26 22:34:49Z bgschaid $ 
 
 #ifndef VALUE_EXPRESSION_DRIVER_I_H
 #define VALUE_EXPRESSION_DRIVER_I_H
@@ -6,6 +6,7 @@
 #include "wallFvPatch.H"
 #include "fixedValueFvPatchFields.H"
 #include "zeroGradientFvPatchFields.H"
+#include "calculatedFvPatchFields.H"
 
 namespace Foam {
 
@@ -82,6 +83,26 @@ void FieldValueExpressionDriver::makePatches
 }
 
 template<class T>
+void FieldValueExpressionDriver::setCalculatedPatches
+(
+    GeometricField<T,fvPatchField,volMesh> &field
+) {
+    typename GeometricField<T,fvPatchField,volMesh>::GeometricBoundaryField &bf=field.boundaryField();
+    List<fvPatchField<T> *>bfNew(bf.size());
+    
+    forAll(bf,patchI) {
+        fvPatchField<T> &pf=bf[patchI];
+        
+        if(
+            typeid(pf)==typeid(calculatedFvPatchField<T>)
+        ) {
+            pf==pf.patchInternalField();
+        }
+    }
+    field.correctBoundaryConditions();
+}
+
+template<class T>
 void FieldValueExpressionDriver::setValuePatches
 (
     GeometricField<T,fvPatchField,volMesh> &field,
@@ -153,6 +174,8 @@ inline FType *FieldValueExpressionDriver::makeField(const Field<typename FType::
     }
 
     f->internalField()=val;
+
+    correctField(*f);
 
     return f;
 }

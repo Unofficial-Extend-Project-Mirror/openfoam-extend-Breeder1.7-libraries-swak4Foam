@@ -1,4 +1,4 @@
-//  ICE Revision: $Id: FieldValueExpressionDriver.H,v 475db83e8611 2011-03-19 12:28:54Z bgschaid $ 
+//  ICE Revision: $Id: FieldValueExpressionDriver.H,v 33be05bfb1af 2011-07-13 00:29:00Z bgschaid $ 
 
 #ifndef VALUE_EXPRESSION_DRIVER_H
 #define VALUE_EXPRESSION_DRIVER_H
@@ -149,8 +149,8 @@ public:
     volScalarField *makeNearDistanceField();
     volScalarField *makeRDistanceField(const volVectorField &r);
     volScalarField *makeVolumeField();
-    volScalarField *makeRandomField();
-    volScalarField *makeGaussRandomField();
+    volScalarField *makeRandomField(label seed=0);
+    volScalarField *makeGaussRandomField(label seed=0);
     volScalarField *makeCellIdField();
     
     // return Time object
@@ -177,6 +177,9 @@ public:
 
     template<class T>
     static void setValuePatches(GeometricField<T,fvPatchField,volMesh> &field,bool keepPatches,const wordList &fixedPatches);
+
+    template<class T>
+    static void setCalculatedPatches(GeometricField<T,fvPatchField,volMesh> &field);
 
 };
 

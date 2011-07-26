@@ -1,4 +1,4 @@
-//  ICE Revision: $Id: FaFieldValueExpressionDriver.H,v 942e8def1dae 2011-03-19 16:24:43Z bgschaid $ 
+//  ICE Revision: $Id: FaFieldValueExpressionDriver.H,v ffdd04ede247 2011-07-13 19:42:13Z bgschaid $ 
 
 #ifndef FAFIELD_VALUE_EXPRESSION_DRIVER_H
 #define FAFIELD_VALUE_EXPRESSION_DRIVER_H
@@ -128,8 +128,8 @@ public:
     areaVectorField *makePositionField();
     areaScalarField *makeRDistanceField(const areaVectorField &r);
     areaScalarField *makeAreaField();
-    areaScalarField *makeRandomField();
-    areaScalarField *makeGaussRandomField();
+    areaScalarField *makeRandomField(label seed=0);
+    areaScalarField *makeGaussRandomField(label seed=0);
     areaScalarField *makeCellIdField();
     
     // Logical expressions

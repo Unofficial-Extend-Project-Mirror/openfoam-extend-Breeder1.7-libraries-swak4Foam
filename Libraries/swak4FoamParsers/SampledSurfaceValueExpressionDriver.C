@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: SampledSurfaceValueExpressionDriver.C,v 0ce187e34e0c 2011-02-22 22:39:26Z bgschaid $ 
+ ICE Revision: $Id: SampledSurfaceValueExpressionDriver.C,v 85b4e25bdb23 2011-04-26 08:59:38Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "SampledSurfaceValueExpressionDriver.H"
@@ -210,6 +210,11 @@ scalarField *SampledSurfaceValueExpressionDriver::makeCellVolumeField()
 
 scalarField *SampledSurfaceValueExpressionDriver::makeFaceAreaMagField()
 {
+    if(debug) {
+        Info << "SampledSurfaceValueExpressionDriver::makeFaceAreaMagField()"
+            << " size: " << this->size() << " magSf: " << theSurface_.magSf().size() 
+            << endl;
+    }
     return new scalarField(theSurface_.magSf());
 }
 

@@ -28,35 +28,12 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: FaceSetValueExpressionDriverI.H,v 4dec67367ae3 2011-05-08 12:35:42Z bgschaid $ 
+ ICE Revision: $Id$ 
 \*---------------------------------------------------------------------------*/
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include "surfaceMesh.H"
-#include "fvsPatchField.H"
-#include "pointPatchField.H"
-#include "primitivePatchInterpolation.H"
-
-#include <cassert>
-
 namespace Foam {
-    label FaceSetValueExpressionDriver::size() const
-    {
-        return faceSet_->size();
-    }
-
-    label FaceSetValueExpressionDriver::pointSize() const
-    {
-        notImplemented("FaceSetValueExpressionDriver::pointSize()");
-        return 0;
-    }
-
-    const fvMesh &FaceSetValueExpressionDriver::mesh() const
-    {
-        //        return dynamicCast<const fvMesh&>(faceSet_->db()); // doesn't work with gcc 4.2
-        return dynamic_cast<const fvMesh&>(faceSet_->db());
-    }
 
 }
 

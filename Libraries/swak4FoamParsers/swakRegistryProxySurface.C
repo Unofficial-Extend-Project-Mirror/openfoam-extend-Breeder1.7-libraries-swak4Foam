@@ -27,7 +27,7 @@ License
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
- ICE Revision: $Id: swakRegistryProxySurface.C,v 02e971e7815c 2011-04-05 22:17:56Z bgschaid $ 
+ ICE Revision: $Id: swakRegistryProxySurface.C,v 85b4e25bdb23 2011-04-26 08:59:38Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "swakRegistryProxySurface.H"
@@ -100,19 +100,49 @@ Foam::swakRegistryProxySurface::~swakRegistryProxySurface()
 
 bool Foam::swakRegistryProxySurface::needsUpdate() const
 {
-    return realSurface().needsUpdate();
+    bool originalUpdate=realSurface().needsUpdate();
+
+    if(debug) {
+        Info << "Foam::swakRegistryProxySurface::needsUpdate(): " << originalUpdate << endl;
+    }
+
+    return originalUpdate;
 }
 
 
 bool Foam::swakRegistryProxySurface::expire()
 {
-    return realSurface().expire();
+    bool originalExpire=realSurface().expire();
+
+    if(debug) {
+        Info << "Foam::swakRegistryProxySurface::expire(): " << originalExpire << endl;
+    }
+
+    return originalExpire;
 }
 
 
 bool Foam::swakRegistryProxySurface::update()
 {
-    return realSurface().update();
+    bool originalUpdate=realSurface().update();
+
+    if(
+        this->Sf().size() != realSurface().Sf().size()
+        ||
+        this->Cf().size() != realSurface().Cf().size()
+        ||
+        this->magSf().size() != realSurface().magSf().size()
+    ) {
+        if(debug) {
+            Info << "Foam::swakRegistryProxySurface::update(): Clearin Geometry" << endl;
+        }
+        clearGeom();
+    }
+
+    if(debug) {
+        Info << "Foam::swakRegistryProxySurface::update(): " << originalUpdate << endl;
+    }
+    return originalUpdate;
 }
 
 
