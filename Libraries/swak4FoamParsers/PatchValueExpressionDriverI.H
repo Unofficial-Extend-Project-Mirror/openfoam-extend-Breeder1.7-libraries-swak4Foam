@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: PatchValueExpressionDriverI.H,v 73cc3b7343f2 2010-09-06 23:02:56Z bgschaid $ 
+ ICE Revision: $Id: PatchValueExpressionDriverI.H,v 5292b1cf960d 2011-09-28 09:31:08Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -49,8 +49,39 @@ namespace Foam {
         typedef GeometricField<Type,fvsPatchField,surfaceMesh> localSurfaceField;
         typedef GeometricField<Type,pointPatchField,pointMesh> localPointField;
 
-        if(variables_.found(name)) {
-            return variables_[name].getResult<Type>(true).ptr();
+        {
+            Field<Type> *vals=NULL;
+            bool isPoint=false;
+
+            if(variables_.found(name)) {
+                isPoint=variables_[name].isPoint();
+                vals=variables_[name].getResult<Type>(true).ptr();
+            } else if(isGlobal<Type>(name,false)) {
+                vals=const_cast<ExpressionResult &>(
+                    lookupGlobal(name)
+                ).getResult<Type>(true).ptr();
+            }
+            if(vals) {
+                if(
+                    (
+                        ! isPoint
+                        &&
+                        vals->size()==this->size()
+                    )
+                    ||
+                    (
+                        isPoint
+                        &&
+                        vals->size()==this->pointSize()
+                    )
+                ) {
+                    return vals;
+                } else {
+                    Field<Type> *result=new Field<Type>(this->size(),gAverage(*vals));
+                    delete vals;
+                    return result;
+                }
+            }
         }
 
         autoPtr<localVolField> tmpVol;

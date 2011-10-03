@@ -33,7 +33,7 @@ Application
 
 Description
 
- ICE Revision: $Id: replayTransientBC.C,v 586405bfab49 2010-08-04 09:35:48Z bgschaid $ 
+ ICE Revision: $Id: replayTransientBC.C,v d74ec2942978 2011-08-09 22:35:42Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
@@ -53,12 +53,17 @@ using namespace Foam;
 
 int main(int argc, char *argv[])
 {
+#   include "addRegionOption.H"
+    argList::validOptions.insert("allowFunctionObjects","");
+
 #   include "setRootCase.H"
 #   include "createTime.H"
 
-    runTime.functionObjects().off();
+    if(!args.options().found("allowFunctionObjects")) {
+        runTime.functionObjects().off();
+    }
 
-#   include "createMesh.H"
+#   include "createNamedMesh.H"
 
     IOdictionary replayDict
     (

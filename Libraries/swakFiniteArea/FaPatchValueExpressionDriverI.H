@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: FaPatchValueExpressionDriverI.H,v af36f1cff6da 2011-01-01 15:00:51Z bgschaid $ 
+ ICE Revision: $Id: FaPatchValueExpressionDriverI.H,v b9e71bbaa2be 2011-08-03 17:35:40Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -49,10 +49,29 @@ namespace Foam {
         typedef GeometricField<Type,faePatchField,edgeMesh> localEdgeField;
         typedef GeometricField<Type,pointPatchField,pointMesh> localPointField;
 
-        if(variables_.found(name)) {
-            return variables_[name].getResult<Type>(true).ptr();
+        {
+            Field<Type> *vals=NULL;
+            
+            if(variables_.found(name)) {
+                vals=variables_[name].getResult<Type>(true).ptr();
+            } else if(isGlobal<Type>(name,false)) {
+                vals=const_cast<ExpressionResult &>(
+                    lookupGlobal(name)
+                ).getResult<Type>(true).ptr();
+            }
+            if(vals) {
+                if(vals->size()>0) {
+                    if(vals->size()==this->size()) {
+                        return vals;
+                    } else {
+                        Field<Type> *result=new Field<Type>(this->size(),gAverage(*vals));
+                        delete vals;
+                        return result;
+                    }
+                }
+            }
         }
-
+    
         autoPtr<localAreaField> tmpVol;
         autoPtr<localEdgeField> tmpSurf;
         autoPtr<localPointField> tmpPoint;

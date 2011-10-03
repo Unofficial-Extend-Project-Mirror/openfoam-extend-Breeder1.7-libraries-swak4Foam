@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: groovyBCFvPatchField.C,v 8167f6a9e2e0 2011-03-20 13:18:35Z bgschaid $ 
+ ICE Revision: $Id: groovyBCFvPatchField.C,v 90138ec97ef3 2011-09-26 18:42:41Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "groovyBCFvPatchField.H"
@@ -89,7 +89,7 @@ groovyBCFvPatchField<Type>::groovyBCFvPatchField
 :
     mixedFvPatchField<Type>(p, iF),
     groovyBCCommon<Type>(dict,true),
-    driver_(this->patch())
+    driver_(dict,this->patch())
 {
     if(debug) {
         Info << "groovyBCFvPatchField<Type>::groovyBCFvPatchField 3" << endl;

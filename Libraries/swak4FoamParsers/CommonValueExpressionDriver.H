@@ -37,7 +37,7 @@ SourceFiles
     CommonValueExpressionDriverI.H
     CommonValueExpressionDriver.C
 
- ICE Revision: $Id: CommonValueExpressionDriver.H,v 350a8c69a7e2 2011-05-26 22:34:49Z bgschaid $ 
+ ICE Revision: $Id: CommonValueExpressionDriver.H,v fa2cbb8abd0d 2011-07-31 21:05:07Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef CommonValueExpressionDriver_H
@@ -81,6 +81,15 @@ protected:
     List<StoredExpressionResult> storedVariables_;
 
     label storedVariablesIndex_;
+
+    wordList globalVariableScopes_;
+
+    const ExpressionResult &lookupGlobal(const word &name) const;
+
+    template<class T>
+    bool isGlobal(const word &name,bool isPoint) const;
+
+    void setGlobalScopes(const wordList &);
 
     HashTable<interpolationTable<scalar>,word> lines_;
 

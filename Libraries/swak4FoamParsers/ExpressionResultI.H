@@ -28,13 +28,46 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: ExpressionResultI.H,v c8d3fc38149b 2010-09-07 21:45:25Z bgschaid $ 
+ ICE Revision: $Id: ExpressionResultI.H,v d23afdc7d21f 2011-09-08 09:00:53Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 namespace Foam {
  
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+    template<class Type>
+    ExpressionResult::ExpressionResult(const Field<Type>  &f)
+        :
+        valType_("None"),
+        valPtr_(NULL),
+        isPoint_(false),
+        isSingleValue_(true)
+    {
+        setResult(f);
+    }
+
+    template<class Type>
+    ExpressionResult::ExpressionResult(const dimensioned<Type>  &f)
+        :
+        valType_("None"),
+        valPtr_(NULL),
+        isPoint_(false),
+        isSingleValue_(true)
+    {
+        setSingleValue(f.value());
+    }
+
+    template<class Type>
+    ExpressionResult::ExpressionResult(const Type  &f,typename enable_if_rank0<pTraits<Type>::rank>::type* dummy)
+        :
+        valType_("None"),
+        valPtr_(NULL),
+        isPoint_(false),
+        isSingleValue_(true)
+    {
+        setSingleValue(f);
+    }
 
     template<class Type>
     void ExpressionResult::setResult(const Field<Type> &val,bool isPoint)
@@ -45,6 +78,7 @@ namespace Foam {
         valPtr_=static_cast<void *>(new Field<Type>(val));
 
         isPoint_=isPoint;
+        isSingleValue_=false;
     }
 
     template<class Type>
@@ -56,6 +90,7 @@ namespace Foam {
         valPtr_=static_cast<void *>(val);
 
         isPoint_=isPoint;
+        isSingleValue_=false;
     }
 
     template<class Type>
@@ -67,10 +102,23 @@ namespace Foam {
         valPtr_=static_cast<void *>(new Field<Type>(size,val));
 
         isPoint_=false;
+        isSingleValue_=false;
     }
 
     template<class Type>
-    tmp<Field<Type> > ExpressionResult::getResult(bool keep)
+    void ExpressionResult::setSingleValue(Type val)
+    {
+        clearResult();
+
+        valType_=pTraits<Type>::typeName;
+        valPtr_=static_cast<void *>(new Field<Type>(1,val));
+
+        isPoint_=false;
+        isSingleValue_=true;
+    }
+
+    template<class Type>
+    inline tmp<Field<Type> > ExpressionResult::getResult(bool keep)
     {
         if(valType_!=pTraits<Type>::typeName) {
             FatalErrorIn("tmp<Field<Type> > ExpressionResult::getResult()")
@@ -97,7 +145,7 @@ namespace Foam {
     }
 
     template<class Type>
-    ExpressionResult ExpressionResult::getUniformInternal(const label size,bool noWarn)
+    ExpressionResult ExpressionResult::getUniformInternal(const label size,bool noWarn) const
     {
         ExpressionResult result;
         const Field<Type> &vals=*static_cast<Field<Type>*>(valPtr_);
@@ -125,6 +173,11 @@ namespace Foam {
     inline bool ExpressionResult::isPoint() const
     {
         return isPoint_;
+    }
+
+    inline bool ExpressionResult::isSingleValue() const
+    {
+        return isSingleValue_;
     }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

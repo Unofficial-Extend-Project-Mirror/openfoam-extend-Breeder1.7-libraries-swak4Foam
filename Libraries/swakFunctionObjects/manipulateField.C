@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: manipulateField.C,v ba70edae8ed2 2011-04-09 22:50:11Z bgschaid $ 
+//  OF-extend Revision: $Id: manipulateField.C,v 27632e645acd 2011-08-11 16:56:11Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -66,12 +66,17 @@ void Foam::manipulateField::manipulate(
 )
 {
     T &original=const_cast<T &>(obr_.lookupObject<T>(name_));
-
+    label cnt=0;
     forAll(original,cellI) {
         if(mask[cellI]>SMALL) {
+            cnt++;
             original[cellI]=data[cellI];
         }
     }
+
+    reduce(cnt,plusOp<label>());
+    Info << "Manipulated field " << name_ << " in " << cnt
+        << " cells with the expression " << expression_ << endl;
     original.correctBoundaryConditions();
 }
 
