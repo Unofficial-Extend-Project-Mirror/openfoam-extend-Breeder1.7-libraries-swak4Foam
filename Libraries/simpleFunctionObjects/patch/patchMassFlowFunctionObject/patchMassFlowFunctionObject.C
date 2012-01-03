@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: patchMassFlowFunctionObject.C,v 659656117ae8 2011-06-29 04:56:04Z bgschaid $ 
+//  OF-extend Revision: $Id: patchMassFlowFunctionObject.C,v e47dcd464b91 2011-11-01 19:14:37Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -87,17 +87,9 @@ void patchMassFlowFunctionObject::write()
 
     if (Pstream::master())
     {
-        unsigned int w = IOstream::defaultPrecision() + 7;
-
-        OFstream& probeStream = *filePtrs_["massFlow"];
-
-        probeStream << setw(w) << phi.time().value();
-
-        forAll(vals, probeI)
-        {
-            probeStream << setw(w) << vals[probeI];
-        }
-        probeStream << nl;
+        writeTime("massFlow",phi.time().value());
+        writeData("massFlow",vals);
+        endData("massFlow");
     }
 
     if(verbose()) {

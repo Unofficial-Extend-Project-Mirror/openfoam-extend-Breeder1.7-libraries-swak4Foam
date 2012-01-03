@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: simpleFunctionObject.C,v 659656117ae8 2011-06-29 04:56:04Z bgschaid $ 
+//  OF-extend Revision: $Id: simpleFunctionObject.C,v fe7f781404b0 2011-11-16 22:14:01Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -51,6 +51,11 @@ simpleFunctionObject::simpleFunctionObject
     verbose_(
         dict.found("verbose")
         ? readBool(dict.lookup("verbose"))
+        : false
+    ),
+    writeDebug_(
+        dict.found("writeDebug")
+        ? readBool(dict.lookup("writeDebug"))
         : false
     ),
     after_(

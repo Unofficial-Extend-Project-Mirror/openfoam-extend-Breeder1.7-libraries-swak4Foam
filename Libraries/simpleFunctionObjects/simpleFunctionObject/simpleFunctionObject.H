@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: simpleFunctionObject.H,v 659656117ae8 2011-06-29 04:56:04Z bgschaid $ 
+//  OF-extend Revision: $Id: simpleFunctionObject.H,v fe7f781404b0 2011-11-16 22:14:01Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -72,6 +72,9 @@ class simpleFunctionObject
     //- Do output on the terminal
     bool verbose_;
 
+    //- Write debug-information to the terminal
+    bool writeDebug_;
+
     //- Time after which calculation should start
     scalar after_;
 
@@ -93,6 +96,9 @@ protected:
 
     //- Do output on the terminal
     bool verbose() const { return verbose_; }
+
+    //- Write debug-information to tthe terminal
+    bool writeDebug() const { return writeDebug_; }
 
     //- Do output this time?
     virtual bool outputTime();
@@ -136,6 +142,8 @@ public:
 
     //- the actual time
     scalar after() const { return after_; }
+
+    const objectRegistry &obr() { return obr_; }
 };
 
 
