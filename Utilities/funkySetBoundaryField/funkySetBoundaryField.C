@@ -33,7 +33,7 @@ Application
 
 Description
 
- ICE Revision: $Id: funkySetBoundaryField.C,v 73cc3b7343f2 2010-09-06 23:02:56Z bgschaid $ 
+ ICE Revision: $Id: funkySetBoundaryField.C,v 1c62ea24b354 2012-04-12 21:18:26Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
@@ -43,6 +43,8 @@ Description
 #include "timeSelector.H"
 
 #include "OFstream.H"
+
+#include "printSwakVersion.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 // Main program:
@@ -58,6 +60,8 @@ int main(int argc, char *argv[])
     argList::validOptions.insert("cacheFields","");
 
 #   include "setRootCase.H"
+
+    printSwakVersion();
 
     word dictName="funkySetBoundaryDict";
     if(args.options().found("dict")) {
@@ -116,6 +120,8 @@ int main(int argc, char *argv[])
                     IOobject::NO_WRITE
                 )
             );
+            // deregister the dictionary so that the field can work on itself
+            field.checkOut();
             {
                 // this way it doesn't matter that the file is not of the right class
                 IFstream inStream(field.filePath());

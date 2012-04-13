@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: executeIfExecutableFitsFunctionObject.C,v 11607baebe13 2011-11-14 14:53:33Z bgschaid $ 
+//  OF-extend Revision: $Id: executeIfExecutableFitsFunctionObject.C,v 94e0c9d7c1d2 2012-04-10 13:46:34Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -36,7 +36,7 @@ License
 #ifdef darwin
 #include "mach-o/dyld.h"
 #endif
-#ifdef linux
+#ifdef __linux__
 #include <unistd.h>
 #endif
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
@@ -80,7 +80,7 @@ executeIfExecutableFitsFunctionObject::executeIfExecutableFitsFunctionObject
             exePath=string(path);
         }
     }
-#elif defined(linux)
+#elif defined(__linux__)
     {
         const int bufSize=1024;
         char path[bufSize];

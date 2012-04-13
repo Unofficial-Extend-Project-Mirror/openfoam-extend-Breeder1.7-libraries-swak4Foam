@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: CommonValueExpressionDriver.C,v 8e78c69634e2 2011-11-30 10:08:37Z bgschaid $ 
+ ICE Revision: $Id: CommonValueExpressionDriver.C,v d7ff970858a8 2012-04-06 16:56:54Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "CommonValueExpressionDriver.H"
@@ -70,7 +70,8 @@ CommonValueExpressionDriver::CommonValueExpressionDriver(
     lookup_(orig.lookup_),
     content_(""),
     trace_scanning_ (orig.trace_scanning_),
-    trace_parsing_ (orig.trace_parsing_)
+    trace_parsing_ (orig.trace_parsing_),
+    prevIterIsOldTime_(orig.prevIterIsOldTime_)
 {
     setSearchBehaviour(
         orig.cacheReadFields_,
@@ -86,7 +87,8 @@ CommonValueExpressionDriver::CommonValueExpressionDriver(const dictionary& dict)
     globalVariableScopes_(dict.lookupOrDefault("globalScopes",wordList())),
     content_(""),
     trace_scanning_ (dict.lookupOrDefault("traceScanning",false)),
-    trace_parsing_ (dict.lookupOrDefault("traceParsing",false))
+    trace_parsing_ (dict.lookupOrDefault("traceParsing",false)),
+    prevIterIsOldTime_(dict.lookupOrDefault("prevIterIsOldTime",false))
 {
     debug=dict.lookupOrDefault<label>("debugCommonDriver",debug);
 
@@ -118,7 +120,8 @@ CommonValueExpressionDriver::CommonValueExpressionDriver(
     globalVariableScopes_(),
     content_(""),
     trace_scanning_ (false),
-    trace_parsing_ (false)
+    trace_parsing_ (false),
+    prevIterIsOldTime_(false)
 {
     setSearchBehaviour(
         cacheReadFields,
@@ -357,7 +360,19 @@ void CommonValueExpressionDriver::clearResult()
 
 vectorField *CommonValueExpressionDriver::composeVectorField(scalarField *x,scalarField *y,scalarField *z)
 {
-    vectorField *result=new vectorField(this->size());
+    if(
+        x->size() != y->size()
+        ||
+        x->size() != z->size()
+    ) {
+        FatalErrorIn("vectorField *CommonValueExpressionDriver::composeVectorField")
+            << "Sizes " << x->size() << " " << y->size() << " "
+                << z-size() << " of the components do not agree"
+                << endl
+                << abort(FatalError);
+    }
+
+    vectorField *result=new vectorField(x->size());
 
     forAll(*result,faceI) {
         (*result)[faceI]=Foam::vector((*x)[faceI],(*y)[faceI],(*z)[faceI]);
@@ -372,7 +387,30 @@ tensorField *CommonValueExpressionDriver::composeTensorField(
     scalarField *zx,scalarField *zy,scalarField *zz
 )
 {
-    tensorField *result=new tensorField(this->size());
+    if(
+        xx->size() != xy->size()
+        ||
+        xx->size() != xz->size()
+        ||
+        xx->size() != yx->size()
+        ||
+        xx->size() != yy->size()
+        ||
+        xx->size() != yz->size()
+        ||
+        xx->size() != zx->size()
+        ||
+        xx->size() != zy->size()
+        ||
+        xx->size() != zz->size()
+    ) {
+        FatalErrorIn("vectorField *CommonValueExpressionDriver::composeVectorField")
+            << "Sizes of the components do not agree"
+                << endl
+                << abort(FatalError);
+    }
+
+    tensorField *result=new tensorField(xx->size());
 
     forAll(*result,faceI) {
         (*result)[faceI]=Foam::tensor(
@@ -392,7 +430,24 @@ symmTensorField *CommonValueExpressionDriver::composeSymmTensorField(
     scalarField *zz
 )
 {
-    symmTensorField *result=new symmTensorField(this->size());
+    if(
+        xx->size() != xy->size()
+        ||
+        xx->size() != xz->size()
+        ||
+        xx->size() != yy->size()
+        ||
+        xx->size() != yz->size()
+        ||
+        xx->size() != zz->size()
+    ) {
+        FatalErrorIn("vectorField *CommonValueExpressionDriver::composeVectorField")
+            << "Sizes of the components do not agree"
+                << endl
+                << abort(FatalError);
+    }
+
+    symmTensorField *result=new symmTensorField(xx->size());
 
     forAll(*result,faceI) {
         (*result)[faceI]=Foam::symmTensor(
@@ -410,7 +465,7 @@ sphericalTensorField *CommonValueExpressionDriver::composeSphericalTensorField(
     scalarField *ii
 )
 {
-    sphericalTensorField *result=new sphericalTensorField(this->size());
+    sphericalTensorField *result=new sphericalTensorField(ii->size());
 
     forAll(*result,faceI) {
         (*result)[faceI]=Foam::sphericalTensor(
@@ -981,6 +1036,83 @@ void CommonValueExpressionDriver::prepareData(dictionary &dict) const
             storedVariables_
         );
     }
+}
+
+class lessOp {
+public:
+    bool operator()(scalar a,scalar b) {
+        return a<b;
+    }
+};
+
+class biggerOp {
+public:
+    bool operator()(scalar a,scalar b) {
+        return a>b;
+    }
+};
+
+ 
+template<class Op>
+class  extremeOp {
+    Op &op;
+public:
+    extremeOp(Op &op) 
+        : op(op)
+        {}
+    Tuple2<scalar,vector> operator()(
+        const Tuple2<scalar,vector> &a,
+        const Tuple2<scalar,vector> &b
+    ) const {
+        if(op(a.first(),b.first())) {
+            return a;
+        } else {
+            return b;
+        }
+    }
+};
+
+template<class Op>
+vector getExtremePosition(
+    Op op,
+    const scalarField &vals,
+    const vectorField &locs
+) {
+    assert(vals.size()==locs.size());
+
+    vector pos(HUGE,HUGE,HUGE);
+    scalar val=op(1,-1) ? -HUGE : HUGE;
+    forAll(vals,i) {
+        if(op(vals[i],val)) {
+            val=vals[i];
+            pos=locs[i];
+        }
+    }
+    if(Pstream::parRun()) {
+        Tuple2<scalar,vector> info(val,pos);
+
+        reduce(info,extremeOp<Op>(op));
+
+        pos=info.second();
+    }
+    return pos;
+}
+
+vector CommonValueExpressionDriver::getPositionOfMinimum(
+    const scalarField &vals,
+    const vectorField &locs
+) const
+{
+    return getExtremePosition(lessOp(),vals,locs);
+}
+
+vector CommonValueExpressionDriver::getPositionOfMaximum(
+    const scalarField &vals,
+    const vectorField &locs
+) const
+{
+    return getExtremePosition(biggerOp(),vals,locs);
+
 }
 
 // ************************************************************************* //

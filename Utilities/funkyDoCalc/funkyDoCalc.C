@@ -33,7 +33,7 @@ Application
 
 Description
 
- ICE Revision: $Id: funkyDoCalc.C,v d9e45684d675 2011-03-16 22:27:25Z bgschaid $ 
+ ICE Revision: $Id: funkyDoCalc.C,v 1c62ea24b354 2012-04-12 21:18:26Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
@@ -43,6 +43,8 @@ Description
 #include "timeSelector.H"
 
 #include "IFstream.H"
+
+#include "printSwakVersion.H"
 
 template <class T>
 void writeData(
@@ -86,6 +88,8 @@ int main(int argc, char *argv[])
 #   include "addRegionOption.H"
 
 #   include "setRootCase.H"
+
+    printSwakVersion();
 
    IFstream theFile(args.args()[1]);
    dictionary theExpressions(theFile);

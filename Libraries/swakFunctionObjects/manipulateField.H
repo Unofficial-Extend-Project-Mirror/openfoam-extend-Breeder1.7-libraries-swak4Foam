@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: manipulateField.H,v b782cab0841b 2011-10-12 21:59:30Z bgschaid $ 
+//  OF-extend Revision: $Id: manipulateField.H,v 26e057baef4c 2012-02-20 19:28:43Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -84,7 +84,8 @@ protected:
     template<class TData,class TMask>
     void manipulate(
         const TData &data,
-        const TMask &mask
+        const TMask &mask,
+        const word entity="cells"
     );
 
     template<class TData,class TMask>

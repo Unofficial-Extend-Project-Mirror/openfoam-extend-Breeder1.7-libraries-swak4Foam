@@ -33,7 +33,7 @@ Application
 
 Description
 
- ICE Revision: $Id: funkySetAreaFields.C,v ba98e2dfa232 2011-12-11 21:38:35Z bgschaid $ 
+ ICE Revision: $Id: funkySetAreaFields.C,v 1c62ea24b354 2012-04-12 21:18:26Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
@@ -44,6 +44,8 @@ Description
 #include "timeSelector.H"
 
 #include "areaFields.H"
+
+#include "printSwakVersion.H"
 
 template<class T,template<class> class PField,class Mesh>
 void writeVolumeField(
@@ -495,6 +497,8 @@ int main(int argc, char *argv[])
     argList::validOptions.insert("dictExt","<extension to the default funkySetAreaFieldsDict-dictionary>");
 
 #   include "setRootCase.H"
+
+    printSwakVersion();
 
     // make sure the program never fails due to dimension "problems"
     dimensionSet::debug=false;

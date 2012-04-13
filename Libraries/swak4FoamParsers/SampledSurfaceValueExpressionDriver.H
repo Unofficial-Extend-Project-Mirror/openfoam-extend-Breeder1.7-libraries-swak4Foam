@@ -37,7 +37,7 @@ SourceFiles
     SampledSurfaceValueExpressionDriverI.H
     SampledSurfaceValueExpressionDriver.C
 
- ICE Revision: $Id: SampledSurfaceValueExpressionDriver.H,v d336629aa26b 2010-12-14 19:43:35Z bgschaid $ 
+ ICE Revision: $Id: SampledSurfaceValueExpressionDriver.H,v 452b5ba5a603 2012-02-02 17:15:16Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef SampledSurfaceValueExpressionDriver_H
@@ -68,7 +68,7 @@ class SampledSurfaceValueExpressionDriver
     // Private Member Functions
 
     template<class Type,class volField,class surfField>
-    Field<Type> *sampleOrInterpolateInternal(const word &name);
+    Field<Type> *sampleOrInterpolateInternal(const word &name,bool oldTime);
 
     static void setDebug();
 
@@ -130,15 +130,15 @@ public:
 
     virtual bool isCell() { return false; }
 
-    virtual Field<scalar> *getScalarField(const string &name);
+    virtual Field<scalar> *getScalarField(const string &name,bool oldTime=false);
 
-    virtual Field<vector> *getVectorField(const string &name);
+    virtual Field<vector> *getVectorField(const string &name,bool oldTime=false);
 
-    virtual Field<tensor> *getTensorField(const string &name);
+    virtual Field<tensor> *getTensorField(const string &name,bool oldTime=false);
 
-    virtual Field<symmTensor> *getSymmTensorField(const string &name);
+    virtual Field<symmTensor> *getSymmTensorField(const string &name,bool oldTime=false);
 
-    virtual Field<sphericalTensor> *getSphericalTensorField(const string &name);
+    virtual Field<sphericalTensor> *getSphericalTensorField(const string &name,bool oldTime=false);
 
     // Handling the parser
     //    void parse(const std::string& f);

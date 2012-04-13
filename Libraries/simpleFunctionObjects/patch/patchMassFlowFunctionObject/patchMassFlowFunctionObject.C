@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: patchMassFlowFunctionObject.C,v e47dcd464b91 2011-11-01 19:14:37Z bgschaid $ 
+//  OF-extend Revision: $Id: patchMassFlowFunctionObject.C,v eba4463c1f1c 2012-01-08 20:16:25Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -93,7 +93,8 @@ void patchMassFlowFunctionObject::write()
     }
 
     if(verbose()) {
-        Info << " MassFlows: ";
+        Info<< regionString() 
+            << " MassFlows: ";
 
         forAll(patchNames_, patchI)
         {

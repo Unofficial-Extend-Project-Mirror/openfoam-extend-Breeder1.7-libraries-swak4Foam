@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: SampledSetValueExpressionDriver.C,v 8e78c69634e2 2011-11-30 10:08:37Z bgschaid $ 
+ ICE Revision: $Id: SampledSetValueExpressionDriver.C,v 452b5ba5a603 2012-02-02 17:15:16Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "SampledSetValueExpressionDriver.H"
@@ -145,43 +145,48 @@ bool SampledSetValueExpressionDriver::update()
     return updated;
 }
 
-Field<scalar> *SampledSetValueExpressionDriver::getScalarField(const string &name)
+Field<scalar> *SampledSetValueExpressionDriver::getScalarField(const string &name,bool oldTime)
 {
     return sampleOrInterpolateInternal<scalar,volScalarField,surfaceScalarField>
         (
-            name
+            name,
+            oldTime
         );
 }
 
-Field<vector> *SampledSetValueExpressionDriver::getVectorField(const string &name)
+Field<vector> *SampledSetValueExpressionDriver::getVectorField(const string &name,bool oldTime)
 {
     return sampleOrInterpolateInternal<vector,volVectorField,surfaceVectorField>
         (
-            name
+            name,
+            oldTime
         );
 }
 
-Field<tensor> *SampledSetValueExpressionDriver::getTensorField(const string &name)
+Field<tensor> *SampledSetValueExpressionDriver::getTensorField(const string &name,bool oldTime)
 {
     return sampleOrInterpolateInternal<tensor,volTensorField,surfaceTensorField>
         (
-            name
+            name,
+            oldTime
         );
 }
 
-Field<symmTensor> *SampledSetValueExpressionDriver::getSymmTensorField(const string &name)
+Field<symmTensor> *SampledSetValueExpressionDriver::getSymmTensorField(const string &name,bool oldTime)
 {
     return sampleOrInterpolateInternal<symmTensor,volSymmTensorField,surfaceSymmTensorField>
         (
-            name
+            name,
+            oldTime
         );
 }
 
-Field<sphericalTensor> *SampledSetValueExpressionDriver::getSphericalTensorField(const string &name)
+    Field<sphericalTensor> *SampledSetValueExpressionDriver::getSphericalTensorField(const string &name,bool oldTime)
 {
     return sampleOrInterpolateInternal<sphericalTensor,volSphericalTensorField,surfaceSphericalTensorField>
         (
-            name
+            name,
+            oldTime
         );
 }
 

@@ -1,4 +1,4 @@
-//  ICE Revision: $Id: FaFieldValueExpressionDriver.C,v b400570d9219 2011-12-09 00:06:13Z bgschaid $ 
+//  ICE Revision: $Id: FaFieldValueExpressionDriver.C,v 92c2d49da723 2012-03-19 22:32:52Z bgschaid $ 
 
 #include "FaFieldValueExpressionDriver.H"
 #include <Random.H>
@@ -402,6 +402,118 @@ edgeVectorField *FaFieldValueExpressionDriver::makeEdgeVectorField
 
     forAll(*f,faceI) {
         (*f)[faceI]=vector((*x)[faceI],(*y)[faceI],(*z)[faceI]);
+    }
+
+    return f;
+}
+
+areaTensorField *FaFieldValueExpressionDriver::makeTensorField
+(
+    areaScalarField *xx,areaScalarField *xy,areaScalarField *xz,
+    areaScalarField *yx,areaScalarField *yy,areaScalarField *yz,
+    areaScalarField *zx,areaScalarField *zy,areaScalarField *zz
+) {
+    areaTensorField *f=makeConstantField<areaTensorField>(tensor(0,0,0,0,0,0,0,0,0));
+
+    forAll(*f,cellI) {
+        (*f)[cellI]=tensor(
+            (*xx)[cellI],(*xy)[cellI],(*xz)[cellI],
+            (*yx)[cellI],(*yy)[cellI],(*yz)[cellI],
+            (*zx)[cellI],(*zy)[cellI],(*zz)[cellI]
+        );
+    }
+
+    f->correctBoundaryConditions();
+
+    return f;
+}
+
+areaSymmTensorField *FaFieldValueExpressionDriver::makeSymmTensorField
+(
+    areaScalarField *xx,areaScalarField *xy,areaScalarField *xz,
+    areaScalarField *yy,areaScalarField *yz,
+    areaScalarField *zz
+) {
+    areaSymmTensorField *f=makeConstantField<areaSymmTensorField>(symmTensor(0,0,0,0,0,0));
+
+    forAll(*f,cellI) {
+        (*f)[cellI]=symmTensor(
+            (*xx)[cellI],(*xy)[cellI],(*xz)[cellI],
+            (*yy)[cellI],(*yz)[cellI],
+            (*zz)[cellI]
+        );
+    }
+
+    f->correctBoundaryConditions();
+
+    return f;
+}
+
+areaSphericalTensorField *FaFieldValueExpressionDriver::makeSphericalTensorField
+(
+    areaScalarField *xx
+) {
+    areaSphericalTensorField *f=makeConstantField<areaSphericalTensorField>(sphericalTensor(0));
+
+    forAll(*f,cellI) {
+        (*f)[cellI]=sphericalTensor(
+            (*xx)[cellI]
+        );
+    }
+
+    f->correctBoundaryConditions();
+
+    return f;
+}
+
+edgeTensorField *FaFieldValueExpressionDriver::makeEdgeTensorField
+(
+    edgeScalarField *xx,edgeScalarField *xy,edgeScalarField *xz,
+    edgeScalarField *yx,edgeScalarField *yy,edgeScalarField *yz,
+    edgeScalarField *zx,edgeScalarField *zy,edgeScalarField *zz
+) {
+    edgeTensorField *f=makeConstantField<edgeTensorField>(tensor(0,0,0,0,0,0,0,0,0));
+
+    forAll(*f,faceI) {
+        (*f)[faceI]=tensor(
+            (*xx)[faceI],(*xy)[faceI],(*xz)[faceI],
+            (*yx)[faceI],(*yy)[faceI],(*yz)[faceI],
+            (*zx)[faceI],(*zy)[faceI],(*zz)[faceI]
+        );
+    }
+
+    return f;
+}
+
+edgeSymmTensorField *FaFieldValueExpressionDriver::makeEdgeSymmTensorField
+(
+    edgeScalarField *xx,edgeScalarField *xy,edgeScalarField *xz,
+    edgeScalarField *yy,edgeScalarField *yz,
+    edgeScalarField *zz
+) {
+    edgeSymmTensorField *f=makeConstantField<edgeSymmTensorField>(symmTensor(0,0,0,0,0,0));
+
+    forAll(*f,faceI) {
+        (*f)[faceI]=symmTensor(
+            (*xx)[faceI],(*xy)[faceI],(*xz)[faceI],
+            (*yy)[faceI],(*yz)[faceI],
+            (*zz)[faceI]
+        );
+    }
+
+    return f;
+}
+
+edgeSphericalTensorField *FaFieldValueExpressionDriver::makeEdgeSphericalTensorField
+(
+    edgeScalarField *xx
+) {
+    edgeSphericalTensorField *f=makeConstantField<edgeSphericalTensorField>(sphericalTensor(0));
+
+    forAll(*f,faceI) {
+        (*f)[faceI]=sphericalTensor(
+            (*xx)[faceI]
+        );
     }
 
     return f;

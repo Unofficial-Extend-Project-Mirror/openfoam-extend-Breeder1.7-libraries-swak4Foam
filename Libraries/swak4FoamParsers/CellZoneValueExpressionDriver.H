@@ -37,7 +37,7 @@ SourceFiles
     CellZoneValueExpressionDriverI.H
     CellZoneValueExpressionDriver.C
 
- ICE Revision: $Id: CellZoneValueExpressionDriver.H,v dfe8d8ef9202 2010-12-14 18:50:11Z bgschaid $ 
+ ICE Revision: $Id: CellZoneValueExpressionDriver.H,v f36aacdb19b4 2012-02-01 20:13:00Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef CellZoneValueExpressionDriver_H
@@ -112,15 +112,15 @@ public:
 
     virtual bool isCell() { return true; }
 
-    virtual Field<scalar> *getScalarField(const string &name);
+    virtual Field<scalar> *getScalarField(const string &name,bool oldTime=false);
 
-    virtual Field<vector> *getVectorField(const string &name);
+    virtual Field<vector> *getVectorField(const string &name,bool oldTime=false);
 
-    virtual Field<tensor> *getTensorField(const string &name);
+    virtual Field<tensor> *getTensorField(const string &name,bool oldTime=false);
 
-    virtual Field<symmTensor> *getSymmTensorField(const string &name);
+    virtual Field<symmTensor> *getSymmTensorField(const string &name,bool oldTime=false);
 
-    virtual Field<sphericalTensor> *getSphericalTensorField(const string &name);
+    virtual Field<sphericalTensor> *getSphericalTensorField(const string &name,bool oldTime=false);
 
     // Handling the parser
     //    void parse(const std::string& f);

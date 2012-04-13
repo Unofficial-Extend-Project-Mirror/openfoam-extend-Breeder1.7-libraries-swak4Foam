@@ -37,7 +37,7 @@ SourceFiles
     FaPatchValueExpressionDriverI.H
     FaPatchValueExpressionDriver.C
 
- ICE Revision: $Id: FaPatchValueExpressionDriver.H,v af36f1cff6da 2011-01-01 15:00:51Z bgschaid $ 
+ ICE Revision: $Id: FaPatchValueExpressionDriver.H,v 400381838f87 2012-03-19 20:21:40Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef FaPatchValueExpressionDriver_H
@@ -101,6 +101,12 @@ protected:
 
     virtual const faMesh &aMesh() const;
 
+    //- set the state of the lexer to scanning vector components
+    void startVectorComponent();
+
+    //- set the state of the lexer to scanning tensor components
+    void startTensorComponent();
+
 public:
 
     //- Runtime type information
@@ -130,6 +136,8 @@ public:
 
     // Member Functions
 
+    const faPatch & patch() const { return patch_; }
+
     vectorField *makePositionField();
 
     vectorField *makePointField();
@@ -150,6 +158,9 @@ public:
     Field<Type> *getField(const string &name);
 
     template<class Type>
+    Field<Type> *getOldTimeField(const string &name);
+
+    template<class Type>
     Field<Type> *getSurfaceNormalField(const string &name);
 
     template<class Type>
@@ -166,6 +177,9 @@ public:
 
     template<class Type>
     Field<Type> *toPoint(const Field<Type> &);
+ 
+    // allow access of protected methods
+    friend class parserFaPatch::FaPatchValueExpressionParser;
 };
 
 

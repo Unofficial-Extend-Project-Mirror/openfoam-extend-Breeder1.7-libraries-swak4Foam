@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: SampledSetValueExpressionDriverI.H,v 8e78c69634e2 2011-11-30 10:08:37Z bgschaid $ 
+ ICE Revision: $Id: SampledSetValueExpressionDriverI.H,v 97d3c498647d 2012-02-03 09:44:42Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -60,7 +60,10 @@ namespace Foam {
     }
 
     template<class Type,class volField,class surfField>
-    Field<Type> *SampledSetValueExpressionDriver::sampleOrInterpolateInternal(const word &name)
+    Field<Type> *SampledSetValueExpressionDriver::sampleOrInterpolateInternal(
+        const word &name,
+        bool oldTime
+    )
     {
         if(debug) {
             Pout << "Sampling set: " << name << " on set " 
@@ -88,7 +91,11 @@ namespace Foam {
                 autoPtr<interpolation<Type> > inter(
                     interpolation<Type>::New(
                         interpolationType_,
-                        this->mesh().lookupObject<volField>(name)
+                        (
+                            !oldTime ?
+                            this->mesh().lookupObject<volField>(name) :
+                            this->mesh().lookupObject<volField>(name).oldTime()
+                        )
                     )
                 );
                 
@@ -118,20 +125,32 @@ namespace Foam {
 
                 forAll(samples, samplei)
                 {
-                    values[samplei] = field[samples.cells()[samplei]];
+                    if(!oldTime) {
+                        values[samplei] = field[samples.cells()[samplei]];
+                    } else {
+                        values[samplei] = field.oldTime()[samples.cells()[samplei]];
+                    }
                 }                
                 if(debug) {
                     Pout << "Values: " << values << endl;
                 }
             }
         } else {
-            autoPtr<volField> f=this->getOrReadField<volField>(name);
+            autoPtr<volField> f=this->getOrReadField<volField>(
+                name,
+                true, // fail if not found
+                oldTime
+            );
 
             if(interpolate_) {
                 autoPtr<interpolation<Type> > inter(
                     interpolation<Type>::New(
                         interpolationType_,
-                        f()
+                        (
+                            !oldTime ?
+                            f() :
+                            f->oldTime()
+                        ) 
                     )
                 );
                 
@@ -158,7 +177,11 @@ namespace Foam {
 
                 forAll(samples, samplei)
                 {
-                    values[samplei] = field[samples.cells()[samplei]];
+                    if(!oldTime) {
+                        values[samplei] = field[samples.cells()[samplei]];
+                    } else {
+                        values[samplei] = field.oldTime()[samples.cells()[samplei]];
+                    }
                 }                
             }
         }

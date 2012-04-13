@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: expressionField.C,v b400570d9219 2011-12-09 00:06:13Z bgschaid $ 
+//  OF-extend Revision: $Id: expressionField.C,v 26e057baef4c 2012-02-20 19:28:43Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -158,6 +158,26 @@ void Foam::expressionField::execute()
         } else if(driver.resultIsTyp<surfaceSphericalTensorField>()) {
             storeField(
                 driver.getResult<surfaceSphericalTensorField>()
+            );
+        } else if(driver.resultIsTyp<pointVectorField>()) {
+            storeField(
+                driver.getResult<pointVectorField>()
+            );
+        } else if(driver.resultIsTyp<pointScalarField>()) {
+            storeField(
+                driver.getResult<pointScalarField>()
+            );
+        } else if(driver.resultIsTyp<pointTensorField>()) {
+            storeField(
+                driver.getResult<pointTensorField>()
+            );
+        } else if(driver.resultIsTyp<pointSymmTensorField>()) {
+            storeField(
+                driver.getResult<pointSymmTensorField>()
+            );
+        } else if(driver.resultIsTyp<pointSphericalTensorField>()) {
+            storeField(
+                driver.getResult<pointSphericalTensorField>()
             );
         } else {
             WarningIn("Foam::expressionField::execute()")

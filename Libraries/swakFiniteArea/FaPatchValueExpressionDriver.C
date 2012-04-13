@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: FaPatchValueExpressionDriver.C,v c41b39061598 2011-12-07 09:36:46Z bgschaid $ 
+ ICE Revision: $Id: FaPatchValueExpressionDriver.C,v bece3cde093b 2012-02-19 12:10:23Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "FaPatchValueExpressionDriver.H"
@@ -150,6 +150,7 @@ vectorField *FaPatchValueExpressionDriver::makePositionField()
 
 vectorField *FaPatchValueExpressionDriver::makePointField()
 {
+    // if implemented go to the call in the grammar and reuse there
     notImplemented("FaPatchValueExpressionDriver::makePointField()");
 
     return new vectorField(0);

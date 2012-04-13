@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: FaceZoneValueExpressionDriver.C,v 8e78c69634e2 2011-11-30 10:08:37Z bgschaid $ 
+ ICE Revision: $Id: FaceZoneValueExpressionDriver.C,v 97d3c498647d 2012-02-03 09:44:42Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "FaceZoneValueExpressionDriver.H"
@@ -132,29 +132,49 @@ inline label SubsetValueExpressionDriver::getIndexFromIterator(const faceZone::c
     return *it;
 }
 
-Field<scalar> *FaceZoneValueExpressionDriver::getScalarField(const string &name)
+    Field<scalar> *FaceZoneValueExpressionDriver::getScalarField(const string &name,bool oldTime)
 {
-    return getFieldInternalAndInterpolate<surfaceScalarField,volScalarField,faceZone,scalar>(name,faceZone_);
+    return getFieldInternalAndInterpolate<surfaceScalarField,volScalarField,faceZone,scalar>(
+        name,
+        faceZone_,
+        oldTime
+    );
 }
 
-Field<vector> *FaceZoneValueExpressionDriver::getVectorField(const string &name)
+Field<vector> *FaceZoneValueExpressionDriver::getVectorField(const string &name,bool oldTime)
 {
-    return getFieldInternalAndInterpolate<surfaceVectorField,volVectorField,faceZone,vector>(name,faceZone_);
+    return getFieldInternalAndInterpolate<surfaceVectorField,volVectorField,faceZone,vector>(
+        name,
+        faceZone_,
+        oldTime
+    );
 }
 
-Field<tensor> *FaceZoneValueExpressionDriver::getTensorField(const string &name)
+Field<tensor> *FaceZoneValueExpressionDriver::getTensorField(const string &name,bool oldTime)
 {
-    return getFieldInternalAndInterpolate<surfaceTensorField,volTensorField,faceZone,tensor>(name,faceZone_);
+    return getFieldInternalAndInterpolate<surfaceTensorField,volTensorField,faceZone,tensor>(
+        name,
+        faceZone_,
+        oldTime
+    );
 }
 
-Field<symmTensor> *FaceZoneValueExpressionDriver::getSymmTensorField(const string &name)
+Field<symmTensor> *FaceZoneValueExpressionDriver::getSymmTensorField(const string &name,bool oldTime)
 {
-    return getFieldInternalAndInterpolate<surfaceSymmTensorField,volSymmTensorField,faceZone,symmTensor>(name,faceZone_);
+    return getFieldInternalAndInterpolate<surfaceSymmTensorField,volSymmTensorField,faceZone,symmTensor>(
+        name,
+        faceZone_,
+        oldTime
+    );
 }
 
-Field<sphericalTensor> *FaceZoneValueExpressionDriver::getSphericalTensorField(const string &name)
+Field<sphericalTensor> *FaceZoneValueExpressionDriver::getSphericalTensorField(const string &name,bool oldTime)
 {
-    return getFieldInternalAndInterpolate<surfaceSphericalTensorField,volSphericalTensorField,faceZone,sphericalTensor>(name,faceZone_);
+    return getFieldInternalAndInterpolate<surfaceSphericalTensorField,volSphericalTensorField,faceZone,sphericalTensor>(
+        name,
+        faceZone_,
+        oldTime
+    );
 }
 
 vectorField *FaceZoneValueExpressionDriver::makePositionField()

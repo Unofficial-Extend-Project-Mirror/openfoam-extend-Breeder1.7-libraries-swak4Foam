@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: groovyBCCommon.C,v d36ab5f6c331 2011-11-13 20:23:44Z bgschaid $ 
+ ICE Revision: $Id: groovyBCCommon.C,v 272ca1bf919e 2011-11-14 23:24:38Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "groovyBCCommon.H"
@@ -62,13 +62,14 @@ template<class Type>
 groovyBCCommon<Type>::groovyBCCommon
 (
     bool hasGradient,
-    bool isPoint
+    bool isPoint,
+    string fractionExpression
 )
 :
     evaluateDuringConstruction_(false),  
     debug_(false),
     hasGradient_(hasGradient),
-    fractionExpression_(isPoint ? "toPoint" : "1")
+    fractionExpression_(isPoint ? "toPoint("+fractionExpression+")" : fractionExpression)
 {
     valueExpression_ = nullValue();
     if(hasGradient_) {
@@ -98,7 +99,8 @@ groovyBCCommon<Type>::groovyBCCommon
 (
     const dictionary& dict,
     bool hasGradient,
-    bool isPoint
+    bool isPoint,
+    string fractionExpression
 )
 :
     evaluateDuringConstruction_(
@@ -108,7 +110,7 @@ groovyBCCommon<Type>::groovyBCCommon
     hasGradient_(hasGradient),
     fractionExpression_(dict.lookupOrDefault(
                             "fractionExpression",
-                            isPoint ? string("toPoint(1)") : string("1"))
+                            isPoint ? string("toPoint("+fractionExpression+")") : string(fractionExpression))
     )
 {
     if (dict.found("valueExpression"))

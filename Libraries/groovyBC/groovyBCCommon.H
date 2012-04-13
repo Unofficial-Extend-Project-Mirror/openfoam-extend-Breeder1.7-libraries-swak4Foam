@@ -37,7 +37,7 @@ Description
 SourceFiles
     groovyBCCommon.C
 
- ICE Revision: $Id: groovyBCCommon.H,v d36ab5f6c331 2011-11-13 20:23:44Z bgschaid $ 
+ ICE Revision: $Id: groovyBCCommon.H,v 272ca1bf919e 2011-11-14 23:24:38Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef groovyBCCommon_H
@@ -85,7 +85,8 @@ public:
     groovyBCCommon
     (
         bool hasGradient,
-        bool isPoint=false
+        bool isPoint=false,
+        string fractionExpression="1"
     );
 
     //- Construct from dictionary
@@ -93,7 +94,8 @@ public:
     (
         const dictionary&,
         bool hasGradient,
-        bool isPoint=false
+        bool isPoint=false,
+        string fractionExpression="1"
     );
 
     //- Copy constructor

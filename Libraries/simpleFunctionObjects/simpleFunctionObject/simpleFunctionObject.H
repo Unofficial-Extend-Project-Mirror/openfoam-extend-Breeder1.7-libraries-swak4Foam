@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: simpleFunctionObject.H,v fe7f781404b0 2011-11-16 22:14:01Z bgschaid $ 
+//  OF-extend Revision: $Id: simpleFunctionObject.H,v eba4463c1f1c 2012-01-08 20:16:25Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -91,6 +91,10 @@ protected:
     dictionary dict_;
 
     word regionName_;
+
+    string regionString_;
+
+    const char *regionString() const { return regionString_.c_str(); }
 
     const objectRegistry& obr_;
 

@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: CellZoneValueExpressionDriver.C,v 8e78c69634e2 2011-11-30 10:08:37Z bgschaid $ 
+ ICE Revision: $Id: CellZoneValueExpressionDriver.C,v f36aacdb19b4 2012-02-01 20:13:00Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "CellZoneValueExpressionDriver.H"
@@ -129,29 +129,29 @@ inline label SubsetValueExpressionDriver::getIndexFromIterator(const cellZone::c
     return *it;
 }
 
-Field<scalar> *CellZoneValueExpressionDriver::getScalarField(const string &name)
+Field<scalar> *CellZoneValueExpressionDriver::getScalarField(const string &name,bool oldTime)
 {
-    return getFieldInternal<volScalarField,cellZone,scalar>(name,cellZone_);
+    return getFieldInternal<volScalarField,cellZone,scalar>(name,cellZone_,oldTime);
 }
 
-Field<vector> *CellZoneValueExpressionDriver::getVectorField(const string &name)
+Field<vector> *CellZoneValueExpressionDriver::getVectorField(const string &name,bool oldTime)
 {
-    return getFieldInternal<volVectorField,cellZone,vector>(name,cellZone_);
+    return getFieldInternal<volVectorField,cellZone,vector>(name,cellZone_,oldTime);
 }
 
-Field<tensor> *CellZoneValueExpressionDriver::getTensorField(const string &name)
+Field<tensor> *CellZoneValueExpressionDriver::getTensorField(const string &name,bool oldTime)
 {
-    return getFieldInternal<volTensorField,cellZone,tensor>(name,cellZone_);
+    return getFieldInternal<volTensorField,cellZone,tensor>(name,cellZone_,oldTime);
 }
 
-Field<symmTensor> *CellZoneValueExpressionDriver::getSymmTensorField(const string &name)
+Field<symmTensor> *CellZoneValueExpressionDriver::getSymmTensorField(const string &name,bool oldTime)
 {
-    return getFieldInternal<volSymmTensorField,cellZone,symmTensor>(name,cellZone_);
+    return getFieldInternal<volSymmTensorField,cellZone,symmTensor>(name,cellZone_,oldTime);
 }
 
-Field<sphericalTensor> *CellZoneValueExpressionDriver::getSphericalTensorField(const string &name)
+Field<sphericalTensor> *CellZoneValueExpressionDriver::getSphericalTensorField(const string &name,bool oldTime)
 {
-    return getFieldInternal<volSphericalTensorField,cellZone,sphericalTensor>(name,cellZone_);
+    return getFieldInternal<volSphericalTensorField,cellZone,sphericalTensor>(name,cellZone_,oldTime);
 }
 
 vectorField *CellZoneValueExpressionDriver::makePositionField()

@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: simpleFunctionObject.C,v fe7f781404b0 2011-11-16 22:14:01Z bgschaid $ 
+//  OF-extend Revision: $Id: simpleFunctionObject.C,v eba4463c1f1c 2012-01-08 20:16:25Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -78,6 +78,11 @@ simpleFunctionObject::simpleFunctionObject
     ),
     obr_(time_.lookupObject<objectRegistry>(regionName_))
 {
+    if(regionName_==polyMesh::defaultRegion) {
+        regionString_ = "";
+    } else {
+        regionString_ = " Region: "+regionName_+" :";
+    }
 }
 
 

@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: CellSetValueExpressionDriver.C,v 8e78c69634e2 2011-11-30 10:08:37Z bgschaid $ 
+ ICE Revision: $Id: CellSetValueExpressionDriver.C,v f36aacdb19b4 2012-02-01 20:13:00Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "CellSetValueExpressionDriver.H"
@@ -123,29 +123,29 @@ inline label SubsetValueExpressionDriver::getIndexFromIterator(const cellSet::co
     return it.key();
 }
 
-Field<scalar> *CellSetValueExpressionDriver::getScalarField(const string &name)
+    Field<scalar> *CellSetValueExpressionDriver::getScalarField(const string &name,bool oldTime)
 {
-    return getFieldInternal<volScalarField,cellSet,scalar>(name,cellSet_);
+    return getFieldInternal<volScalarField,cellSet,scalar>(name,cellSet_,oldTime);
 }
 
-Field<vector> *CellSetValueExpressionDriver::getVectorField(const string &name)
+Field<vector> *CellSetValueExpressionDriver::getVectorField(const string &name,bool oldTime)
 {
-    return getFieldInternal<volVectorField,cellSet,vector>(name,cellSet_);
+    return getFieldInternal<volVectorField,cellSet,vector>(name,cellSet_,oldTime);
 }
 
-Field<tensor> *CellSetValueExpressionDriver::getTensorField(const string &name)
+Field<tensor> *CellSetValueExpressionDriver::getTensorField(const string &name,bool oldTime)
 {
-    return getFieldInternal<volTensorField,cellSet,tensor>(name,cellSet_);
+    return getFieldInternal<volTensorField,cellSet,tensor>(name,cellSet_,oldTime);
 }
 
-Field<symmTensor> *CellSetValueExpressionDriver::getSymmTensorField(const string &name)
+Field<symmTensor> *CellSetValueExpressionDriver::getSymmTensorField(const string &name,bool oldTime)
 {
-    return getFieldInternal<volSymmTensorField,cellSet,symmTensor>(name,cellSet_);
+    return getFieldInternal<volSymmTensorField,cellSet,symmTensor>(name,cellSet_,oldTime);
 }
 
-Field<sphericalTensor> *CellSetValueExpressionDriver::getSphericalTensorField(const string &name)
+Field<sphericalTensor> *CellSetValueExpressionDriver::getSphericalTensorField(const string &name,bool oldTime)
 {
-    return getFieldInternal<volSphericalTensorField,cellSet,sphericalTensor>(name,cellSet_);
+    return getFieldInternal<volSphericalTensorField,cellSet,sphericalTensor>(name,cellSet_,oldTime);
 }
 
 vectorField *CellSetValueExpressionDriver::makePositionField()
