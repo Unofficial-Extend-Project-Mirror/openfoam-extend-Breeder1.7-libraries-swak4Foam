@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: functionObjectListProxy.H,v 4669d47cc8f4 2011-11-16 23:13:49Z bgschaid $ 
+//  OF-extend Revision: $Id: functionObjectListProxy.H,v 03b1034fea34 2012-05-04 23:19:12Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -61,6 +61,8 @@ class functionObjectListProxy
     //- Disallow default bitwise assignment
     void operator=(const functionObjectListProxy&);
 
+protected:
+
     //- the actual function Objects that this encapsulates
     autoPtr<functionObjectList> functions_;
 
@@ -68,7 +70,7 @@ class functionObjectListProxy
     functionObjectList &functions();
 
     //- initialize the function-objects
-    void initFunctions();
+    virtual void initFunctions();
 
 public:
 
@@ -83,7 +85,9 @@ public:
     (
         const word&,
         const Time&,
-        const dictionary&
+        const dictionary&,
+        // to switch off for FO that would require a virtual method
+        bool allowReadingDuringConstruction=true
     );
 
     // Member Functions

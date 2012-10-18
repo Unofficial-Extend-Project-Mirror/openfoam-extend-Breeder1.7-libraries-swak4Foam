@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: timelineFunctionObject.C,v 800ebadde9f8 2011-11-06 08:03:23Z bgschaid $ 
+//  OF-extend Revision: $Id: timelineFunctionObject.C,v c4b09d4cbcc7 2012-08-31 20:56:13Z bgschaid $
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -96,6 +96,14 @@ void timelineFunctionObject::flush()
     }
 }
 
+void timelineFunctionObject::closeAllFiles()
+{
+    forAllIter(HashPtrTable<OFstream>, filePtrs_, iter)
+    {
+        delete filePtrs_.remove(iter);
+    }
+}
+
 bool timelineFunctionObject::start()
 {
     simpleDataFunctionObject::start();
@@ -129,11 +137,11 @@ bool timelineFunctionObject::start()
             if (!filePtrs_.found(fldName))
             {
                 fileName theDir=dataDir();
-                
+
                 OFstream* sPtr = new OFstream(theDir/fldName+fileExtension_);
 
                 filePtrs_.insert(fldName, sPtr);
-               
+
                 OFstream &s=*sPtr;
 
                 if(

@@ -1,5 +1,5 @@
 /*---------------------------------------------------------------------------*\
- ##   ####  ######     | 
+ ##   ####  ######     |
  ##  ##     ##         | Copyright: ICE Stroemungsfoschungs GmbH
  ##  ##     ####       |
  ##  ##     ##         | http://www.ice-sf.at
@@ -28,10 +28,12 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: SampledSetValueExpressionDriver.C,v 452b5ba5a603 2012-02-02 17:15:16Z bgschaid $ 
+ ICE Revision: $Id: SampledSetValueExpressionDriver.C,v 279c3c729903 2012-08-05 19:33:33Z bgschaid $
 \*---------------------------------------------------------------------------*/
 
 #include "SampledSetValueExpressionDriver.H"
+#include "SampledSetValuePluginFunction.H"
+
 #include "SetsRepository.H"
 
 #include "addToRunTimeSelectionTable.H"
@@ -42,13 +44,15 @@ namespace Foam {
 
 defineTypeNameAndDebug(SampledSetValueExpressionDriver, 0);
 
+word SampledSetValueExpressionDriver::driverName_="set";
+
 addNamedToRunTimeSelectionTable(CommonValueExpressionDriver, SampledSetValueExpressionDriver, dictionary, set);
 addNamedToRunTimeSelectionTable(CommonValueExpressionDriver, SampledSetValueExpressionDriver, idName, set);
 
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
 
-void SampledSetValueExpressionDriver::setDebug() 
+void SampledSetValueExpressionDriver::setDebug()
 {
     if(debug>1) {
         if(sampledSet::debug<1) {
@@ -113,7 +117,7 @@ SampledSetValueExpressionDriver::SampledSetValueExpressionDriver(const dictionar
     ),
     interpolate_(dict.lookupOrDefault<bool>("interpolate",false)),
     interpolationType_(
-        interpolate_ 
+        interpolate_
         ?
         word(dict.lookup("interpolationType"))
         :
@@ -192,7 +196,7 @@ Field<symmTensor> *SampledSetValueExpressionDriver::getSymmTensorField(const str
 
 vectorField *SampledSetValueExpressionDriver::makePositionField()
 {
-    return new vectorField(theSet_); 
+    return new vectorField(theSet_);
 }
 
 scalarField *SampledSetValueExpressionDriver::makeCellVolumeField()
@@ -243,6 +247,26 @@ vectorField *SampledSetValueExpressionDriver::makeFaceAreaField()
             << exit(FatalError);
 
     return new vectorField(0);
+}
+
+autoPtr<CommonPluginFunction> SampledSetValueExpressionDriver::newPluginFunction(
+    const word &name
+) {
+    return autoPtr<CommonPluginFunction>(
+        SampledSetValuePluginFunction::New(
+            *this,
+            name
+        ).ptr()
+    );
+}
+
+bool SampledSetValueExpressionDriver::existsPluginFunction(
+    const word &name
+) {
+    return SampledSetValuePluginFunction::exists(
+        *this,
+        name
+    );
 }
 
 // ************************************************************************* //

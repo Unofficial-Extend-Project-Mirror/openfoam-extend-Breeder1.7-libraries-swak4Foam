@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: pythonInterpreterWrapper.C,v f06e93110430 2012-04-02 18:46:17Z bgschaid $ 
+//  OF-extend Revision: $Id: pythonInterpreterWrapper.C,v d4f1d5bf0c1b 2012-05-07 20:28:40Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -229,6 +229,49 @@ bool pythonInterpreterWrapper::executeCode(const string &code,bool putVariables,
     int fail=PyRun_SimpleString(code.c_str());
 
     doAfterExecution(fail,code,putVariables,failOnException);
+
+    return fail==0;
+}
+
+bool pythonInterpreterWrapper::executeCodeCaptureOutput(
+    const string &code,
+    string &stdout,
+    bool putVariables,
+    bool failOnException
+) {
+    setInterpreter();
+
+    getGlobals();
+
+    PyObject *m = PyImport_AddModule("__main__");
+
+    char const* catcherCode = 
+"# catcher code\n"
+"import sys\n"
+"class __StdoutCatcher:\n"
+"   def __init__(self):\n"
+"      self.data = ''\n"
+"   def write(self, stuff):\n"
+"      self.data = self.data + stuff\n"
+"__catcher = __StdoutCatcher()\n"
+"__precatcherStdout = sys.stdout\n"
+"sys.stdout = __catcher\n";
+
+    PyRun_SimpleString(catcherCode);
+
+    int fail=PyRun_SimpleString(code.c_str());
+
+    char const* postCatchCode = 
+"sys.stdout = __precatcherStdout\n";
+
+    PyRun_SimpleString(postCatchCode);
+
+    doAfterExecution(fail,code,putVariables,failOnException);
+
+    PyObject* catcher = PyObject_GetAttrString(m, "__catcher");
+    PyObject* output = PyObject_GetAttrString(catcher, "data");
+
+    stdout=string(PyString_AsString(output));
 
     return fail==0;
 }

@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: timelineFunctionObject.H,v 800ebadde9f8 2011-11-06 08:03:23Z bgschaid $ 
+//  OF-extend Revision: $Id: timelineFunctionObject.H,v c4b09d4cbcc7 2012-08-31 20:56:13Z bgschaid $
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -57,7 +57,7 @@ class timelineFunctionObject
 
     //- Disallow default bitwise copy construct
     timelineFunctionObject(const timelineFunctionObject&);
-    
+
     //- Disallow default bitwise assignment
     void operator=(const timelineFunctionObject&);
 
@@ -110,6 +110,10 @@ protected:
 
     //- ends a dataset (usually by writing an endline)
     void endData(const word &name);
+
+    //- close all files to enable a new slate
+    void closeAllFiles();
+
 public:
 
     //- Runtime type information

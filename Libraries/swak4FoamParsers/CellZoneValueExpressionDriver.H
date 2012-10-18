@@ -1,5 +1,5 @@
 /*---------------------------------------------------------------------------*\
- ##   ####  ######     | 
+ ##   ####  ######     |
  ##  ##     ##         | Copyright: ICE Stroemungsfoschungs GmbH
  ##  ##     ####       |
  ##  ##     ##         | http://www.ice-sf.at
@@ -37,7 +37,7 @@ SourceFiles
     CellZoneValueExpressionDriverI.H
     CellZoneValueExpressionDriver.C
 
- ICE Revision: $Id: CellZoneValueExpressionDriver.H,v f36aacdb19b4 2012-02-01 20:13:00Z bgschaid $ 
+ ICE Revision: $Id: CellZoneValueExpressionDriver.H,v 279c3c729903 2012-08-05 19:33:33Z bgschaid $
 \*---------------------------------------------------------------------------*/
 
 #ifndef CellZoneValueExpressionDriver_H
@@ -62,6 +62,8 @@ class CellZoneValueExpressionDriver
 :
     public SubsetValueExpressionDriver
 {
+    static word driverName_;
+
     // Private data
     const cellZone &cellZone_;
 
@@ -72,17 +74,19 @@ public:
      //- Runtime type information
     TypeName("CellZoneValueExpressionDriver");
 
+    static const word &driverName() { return driverName_; }
+
    // Constructors
 
     //- Construct from components
     CellZoneValueExpressionDriver(const cellZone &);
-    
+
     //- Construct from a dictionary
     CellZoneValueExpressionDriver(const dictionary& dict,const fvMesh&mesh);
-    
+
     //- Construct from an id
     CellZoneValueExpressionDriver(const word& id,const fvMesh&mesh);
-    
+
     //- Copy construct
     CellZoneValueExpressionDriver(const cellZone &,const CellZoneValueExpressionDriver&);
 
@@ -136,6 +140,17 @@ public:
 
 //     template<class Type>
 //     virtual Field<Type> *toPoint(const Field<Type> &)=0;
+
+    //- return a new plugin-function
+    virtual autoPtr<CommonPluginFunction> newPluginFunction(
+        const word &name
+    );
+
+    //- tests for a plugin-function
+    virtual bool existsPluginFunction(
+        const word &name
+    );
+
 };
 
 

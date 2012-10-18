@@ -1,5 +1,5 @@
 /*---------------------------------------------------------------------------*\
- ##   ####  ######     | 
+ ##   ####  ######     |
  ##  ##     ##         | Copyright: ICE Stroemungsfoschungs GmbH
  ##  ##     ####       |
  ##  ##     ##         | http://www.ice-sf.at
@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: FaCommonValueExpressionDriver.C,v ea014eede4a6 2011-01-01 14:41:41Z bgschaid $ 
+ ICE Revision: $Id: FaCommonValueExpressionDriver.C,v 3ecd1c60c2be 2012-08-08 11:36:05Z bgschaid $
 \*---------------------------------------------------------------------------*/
 
 #include "FaCommonValueExpressionDriver.H"
@@ -66,11 +66,11 @@ const faMesh &FaCommonValueExpressionDriver::faRegionMesh
             // this field must exist and is our only hint to the faMesh (as it doesn't seem to be registered)
             "edgeCentres"
         ).mesh()
-    );    
+    );
 }
 
 
-FaCommonValueExpressionDriver::FaCommonValueExpressionDriver(        
+FaCommonValueExpressionDriver::FaCommonValueExpressionDriver(
     bool cacheReadFields,
     bool searchInMemory,
     bool searchOnDisc

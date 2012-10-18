@@ -38,7 +38,7 @@ Description
 SourceFiles
     expressionToFace.C
 
- ICE Revision: $Id: expressionToFace.H,v 8e2a118f3b74 2010-08-31 14:30:41Z bgschaid $ 
+ ICE Revision: $Id: expressionToFace.H,v 514dd427a5e3 2012-05-02 22:09:14Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef expressionToFace_H
@@ -66,6 +66,9 @@ class expressionToFace
     //- The logical expression to use
     string expression_;
     
+    //- dictionary with additional data
+    autoPtr<dictionary> dict_;
+
     // Private Member Functions
 
     //- Depending on face to cell option add to or delete from cellSet.

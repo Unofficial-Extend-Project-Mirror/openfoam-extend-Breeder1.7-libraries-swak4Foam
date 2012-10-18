@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: groovyBCPointPatchField.C,v 8e78c69634e2 2011-11-30 10:08:37Z bgschaid $ 
+ ICE Revision: $Id: groovyBCPointPatchField.C,v 6028ce3b1319 2012-05-24 21:34:23Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "groovyBCPointPatchField.H"
@@ -89,7 +89,11 @@ groovyBCPointPatchField<Type>::groovyBCPointPatchField
 {
     driver_.readVariablesAndTables(dict);
 
-    this->refValue() = pTraits<Type>::zero;
+    if (dict.found("refValue")) {
+        this->refValue() = Field<Type>("refValue", dict, p.size());
+    } else {
+        this->refValue() = pTraits<Type>::zero;
+    }
 
     if (dict.found("value"))
     {
@@ -115,11 +119,17 @@ groovyBCPointPatchField<Type>::groovyBCPointPatchField
     }
 
     //    this->refGrad() = pTraits<Type>::zero;
-    this->valueFraction() = 1;
+    if (dict.found("valueFraction")) {
+        this->valueFraction() = Field<scalar>("valueFraction", dict, p.size());
+    } else {
+        this->valueFraction() = 1;
+    }
 
     if(this->evaluateDuringConstruction()) {
         // make sure that this works with potentialFoam or other solvers that don't evaluate the BCs
         this->evaluate();
+    } else {
+        // mixed-BC DOES NOT call evaluate during construction
     }
 }
 

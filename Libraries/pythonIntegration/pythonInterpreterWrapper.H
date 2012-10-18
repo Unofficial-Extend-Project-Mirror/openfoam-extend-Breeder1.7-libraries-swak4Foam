@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: pythonInterpreterWrapper.H,v 456ff65444d5 2012-04-02 18:25:12Z bgschaid $ 
+//  OF-extend Revision: $Id: pythonInterpreterWrapper.H,v d4f1d5bf0c1b 2012-05-07 20:28:40Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -114,6 +114,9 @@ protected:
 
     //- Execute code. Return true if there was no problem
     bool executeCode(const string &code,bool putVariables,bool failOnException=false);
+
+    //- Execute code and capture the stdout. Return true if there was no problem
+    bool executeCodeCaptureOutput(const string &code,string &stdout,bool putVariables,bool failOnException=false);
 
     //- Execute code and see if it returns to true or false
     bool evaluateCodeTrueOrFalse(const string &code,bool failOnException=false);

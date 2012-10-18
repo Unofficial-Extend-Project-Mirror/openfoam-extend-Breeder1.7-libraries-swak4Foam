@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: swakExpressionFunctionObject.C,v 7aac0fa2709a 2011-11-01 21:55:45Z bgschaid $ 
+//  OF-extend Revision: $Id: swakExpressionFunctionObject.C,v cedab1b58c1b 2012-07-22 21:15:40Z bgschaid $
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -62,7 +62,7 @@ swakExpressionFunctionObject::swakExpressionFunctionObject
             dict,
             refCast<const fvMesh>(obr_)
         )
-    ) 
+    )
 {
     driver_->createWriterAndRead(name+"_"+type());
 }
@@ -96,10 +96,10 @@ void swakExpressionFunctionObject::write()
     if(verbose()) {
         Info << "Expression " << name() << " : ";
     }
-    
+
     driver_->clearVariables();
     driver_->parse(expression_);
-    word rType=driver_->getResultType();
+    word rType=driver_->CommonValueExpressionDriver::getResultType();
 
     if(rType==pTraits<scalar>::typeName) {
         writeTheData<scalar>(driver_());
@@ -113,10 +113,10 @@ void swakExpressionFunctionObject::write()
         writeTheData<sphericalTensor>(driver_());
     } else {
         WarningIn("swakExpressionFunctionObject::write()")
-            << "Don't know how to handle type " << rType 
+            << "Don't know how to handle type " << rType
                 << endl;
     }
-    
+
     if(verbose()) {
         Info << endl;
     }

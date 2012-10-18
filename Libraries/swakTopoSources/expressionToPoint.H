@@ -36,7 +36,7 @@ Description
 SourceFiles
     expressionToPoint.C
 
- ICE Revision: $Id$ 
+ ICE Revision: $Id: expressionToPoint.H,v 514dd427a5e3 2012-05-02 22:09:14Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef expressionToPoint_H
@@ -64,6 +64,9 @@ class expressionToPoint
 
         //- The logical expression to use
         string expression_;
+
+        //- dictionary with additional data
+        autoPtr<dictionary> dict_;
 
         void combine(topoSet& set, const bool add) const;
 

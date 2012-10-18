@@ -27,7 +27,7 @@ License
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
- ICE Revision: $Id: expressionToCell.C,v 8e78c69634e2 2011-11-30 10:08:37Z bgschaid $ 
+ ICE Revision: $Id: expressionToCell.C,v 514dd427a5e3 2012-05-02 22:09:14Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "expressionToCell.H"
@@ -74,6 +74,11 @@ void Foam::expressionToCell::combine(topoSet& set, const bool add) const
             true, // search in memory
             true  // search on disc
         );
+
+    if(dict_.valid()) {
+        driver.readVariablesAndTables(dict_());
+        driver.clearVariables();
+    }
     driver.parse(expression_);
     if(!driver.resultIsTyp<volScalarField>(true)) {
         FatalErrorIn("Foam::expressionToCell::combine(topoSet& set, const bool add) const")
@@ -114,7 +119,8 @@ Foam::expressionToCell::expressionToCell
 )
 :
     topoSetSource(mesh),
-    expression_(dict.lookup("expression"))
+    expression_(dict.lookup("expression")),
+    dict_(new dictionary(dict))
 {}
 
 

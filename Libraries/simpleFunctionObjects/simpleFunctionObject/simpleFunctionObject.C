@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: simpleFunctionObject.C,v eba4463c1f1c 2012-01-08 20:16:25Z bgschaid $ 
+//  OF-extend Revision: $Id: simpleFunctionObject.C,v 4a55d302ec6d 2012-09-05 13:24:01Z bgschaid $
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -72,8 +72,8 @@ simpleFunctionObject::simpleFunctionObject
     time_(t),
     dict_(dict),
     regionName_(
-        dict_.found("region") 
-        ? dict_.lookup("region") 
+        dict_.found("region")
+        ? dict_.lookup("region")
         : polyMesh::defaultRegion
     ),
     obr_(time_.lookupObject<objectRegistry>(regionName_))
@@ -91,7 +91,7 @@ simpleFunctionObject::simpleFunctionObject
 bool simpleFunctionObject::start()
 {
     timeSteps_=outputInterval_;
-    
+
     return true;
 }
 
@@ -105,18 +105,30 @@ bool simpleFunctionObject::outputTime()
 
 bool simpleFunctionObject::execute()
 {
+    if(debug) {
+        Info << name() << "::execute() - Entering" << endl;
+    }
     if(time_.time().value()<after_) {
+        if(debug) {
+            Info << name() << "::execute() - Leaving - after" << endl;
+        }
         return true;
     }
 
     timeSteps_++;
 
     if(this->outputTime()) {
+        if(debug) {
+            Info << name() << "::execute() - outputTime" << endl;
+        }
         timeSteps_=0;
         write();
         flush();
     }
 
+    if(debug) {
+        Info << name() << "::execute() - Leaving" << endl;
+    }
     return true;
 }
 

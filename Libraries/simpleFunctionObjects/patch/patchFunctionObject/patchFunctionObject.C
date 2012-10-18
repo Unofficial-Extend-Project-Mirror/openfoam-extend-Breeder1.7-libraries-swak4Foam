@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: patchFunctionObject.C,v e47dcd464b91 2011-11-01 19:14:37Z bgschaid $ 
+//  OF-extend Revision: $Id: patchFunctionObject.C,v c4b09d4cbcc7 2012-08-31 20:56:13Z bgschaid $
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -58,8 +58,13 @@ patchFunctionObject::patchFunctionObject
 
 bool patchFunctionObject::start()
 {
+    wordList oldPatchNames(patchNames_);
     patchNames_ = wordList(dict_.lookup("patches"));
 
+    // the patches changed
+    if(patchNames_!=oldPatchNames) {
+        closeAllFiles();
+    }
     timelineFunctionObject::start();
 
     patchIndizes_.setSize(patchNames_.size());
@@ -69,8 +74,8 @@ bool patchFunctionObject::start()
         const word &name=patchNames_[i];
         patchIndizes_[i]=mesh.boundaryMesh().findPatchID(name);
         if(patchIndizes_[i]<0) {
-            WarningIn("patchFunctionObject::start()") 
-                << " Patch " << name << " does not exist in patches: " 
+            WarningIn("patchFunctionObject::start()")
+                << " Patch " << name << " does not exist in patches: "
                     << mesh.boundaryMesh().names() << endl;
         }
     }

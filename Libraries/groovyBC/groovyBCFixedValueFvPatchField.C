@@ -28,7 +28,7 @@ License
     along with OpenFOAM; if not, write to the Free Software Foundation,
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
- ICE Revision: $Id: groovyBCFixedValueFvPatchField.C,v d36ab5f6c331 2011-11-13 20:23:44Z bgschaid $ 
+ ICE Revision: $Id: groovyBCFixedValueFvPatchField.C,v 6028ce3b1319 2012-05-24 21:34:23Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #include "groovyBCFixedValueFvPatchField.H"
@@ -121,6 +121,8 @@ groovyBCFixedValueFvPatchField<Type>::groovyBCFixedValueFvPatchField
     if(this->evaluateDuringConstruction()) {
         // make sure that this works with potentialFoam or other solvers that don't evaluate the BCs
         this->evaluate();
+    } else {
+        // original does nothing
     }
 }
 

@@ -1,5 +1,5 @@
 /*---------------------------------------------------------------------------*\
- ##   ####  ######     | 
+ ##   ####  ######     |
  ##  ##     ##         | Copyright: ICE Stroemungsfoschungs GmbH
  ##  ##     ####       |
  ##  ##     ##         | http://www.ice-sf.at
@@ -37,7 +37,7 @@ SourceFiles
     FaceSetValueExpressionDriverI.H
     FaceSetValueExpressionDriver.C
 
- ICE Revision: $Id: FaceSetValueExpressionDriver.H,v f36aacdb19b4 2012-02-01 20:13:00Z bgschaid $ 
+ ICE Revision: $Id: FaceSetValueExpressionDriver.H,v 279c3c729903 2012-08-05 19:33:33Z bgschaid $
 \*---------------------------------------------------------------------------*/
 
 #ifndef FaceSetValueExpressionDriver_H
@@ -62,6 +62,8 @@ class FaceSetValueExpressionDriver
 :
     public SetSubsetValueExpressionDriver
 {
+    static word driverName_;
+
     // Private data
     autoPtr<faceSet> faceSet_;
 
@@ -77,6 +79,8 @@ public:
      //- Runtime type information
     TypeName("FaceSetValueExpressionDriver");
 
+    static const word &driverName() { return driverName_; }
+
    // Constructors
 
     //- Construct from components
@@ -85,13 +89,13 @@ public:
         bool autoInterpolate=false,
         bool warnAutoInterpolate=true
     );
-    
+
     //- Construct from a dictionary
     FaceSetValueExpressionDriver(const dictionary& dict,const fvMesh&mesh);
-    
+
     //- Construct from an id
     FaceSetValueExpressionDriver(const word& id,const fvMesh&mesh);
-    
+
     //- Copy construct
     FaceSetValueExpressionDriver(const faceSet &,const FaceSetValueExpressionDriver&);
 
@@ -145,6 +149,17 @@ public:
 
 //     template<class Type>
 //     virtual Field<Type> *toPoint(const Field<Type> &)=0;
+
+    //- return a new plugin-function
+    virtual autoPtr<CommonPluginFunction> newPluginFunction(
+        const word &name
+    );
+
+    //- tests for a plugin-function
+    virtual bool existsPluginFunction(
+        const word &name
+    );
+
 };
 
 

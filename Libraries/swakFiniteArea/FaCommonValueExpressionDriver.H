@@ -1,5 +1,5 @@
 /*---------------------------------------------------------------------------*\
- ##   ####  ######     | 
+ ##   ####  ######     |
  ##  ##     ##         | Copyright: ICE Stroemungsfoschungs GmbH
  ##  ##     ####       |
  ##  ##     ##         | http://www.ice-sf.at
@@ -37,7 +37,7 @@ SourceFiles
     FaCommonValueExpressionDriverI.H
     FaCommonValueExpressionDriver.C
 
- ICE Revision: $Id: FaCommonValueExpressionDriver.H,v ea014eede4a6 2011-01-01 14:41:41Z bgschaid $ 
+ ICE Revision: $Id: FaCommonValueExpressionDriver.H,v 3ecd1c60c2be 2012-08-08 11:36:05Z bgschaid $
 \*---------------------------------------------------------------------------*/
 
 #ifndef FaCommonValueExpressionDriver_H
@@ -75,11 +75,11 @@ protected:
     template<class T>
     inline tmp<T> readAndRegister(const word &name);
 
+public:
+
     static const faMesh &faRegionMesh(
         const fvMesh &mesh
     );
-
-public:
 
     //- Runtime type information
     TypeName("FaCommonValueExpressionDriver");
@@ -87,7 +87,7 @@ public:
     // Constructors
 
     //- Construct and determine behaviour
-    FaCommonValueExpressionDriver(        
+    FaCommonValueExpressionDriver(
         bool cacheReadFields=false,
         bool searchInMemory=true,
         bool searchOnDisc=false
@@ -95,7 +95,7 @@ public:
 
     //- Construct from a dictionary
     FaCommonValueExpressionDriver(const dictionary& dict);
-    
+
     //- Copy construct
     FaCommonValueExpressionDriver(const FaCommonValueExpressionDriver&);
 

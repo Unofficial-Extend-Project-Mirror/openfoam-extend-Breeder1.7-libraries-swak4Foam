@@ -1,4 +1,4 @@
-//  OF-extend Revision: $Id: functionObjectListProxy.C,v 8e78c69634e2 2011-11-30 10:08:37Z bgschaid $ 
+//  OF-extend Revision: $Id: functionObjectListProxy.C,v 03b1034fea34 2012-05-04 23:19:12Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
@@ -52,7 +52,8 @@ functionObjectListProxy::functionObjectListProxy
 (
     const word& name,
     const Time& t,
-    const dictionary& dict
+    const dictionary& dict,
+    bool allowReadingDuringConstruction
 )
 :
     simpleFunctionObject(
@@ -61,12 +62,20 @@ functionObjectListProxy::functionObjectListProxy
         dict
     )
 {
-    if(!dict.found("functions")) {
+    if(
+        allowReadingDuringConstruction
+        &&
+        !dict.found("functions")
+    ) {
         FatalErrorIn("functionObjectListProxy::functionObjectListProxy")
             << "No entry 'functions' in dictionary of " << name << endl
                 << exit(FatalError);
     }
-    if(readBool(dict.lookup("readDuringConstruction"))) {
+    if(
+        allowReadingDuringConstruction
+        &&
+        readBool(dict.lookup("readDuringConstruction"))
+    ) {
         if(writeDebug()) {
             Info << this->name() << " list initialized during construction" << endl;
         }

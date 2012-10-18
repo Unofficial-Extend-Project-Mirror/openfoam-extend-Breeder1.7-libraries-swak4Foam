@@ -36,7 +36,7 @@ Description
 SourceFiles
     expressionToCell.C
 
- ICE Revision: $Id: expressionToCell.H,v 8e2a118f3b74 2010-08-31 14:30:41Z bgschaid $ 
+ ICE Revision: $Id: expressionToCell.H,v 514dd427a5e3 2012-05-02 22:09:14Z bgschaid $ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef expressionToCell_H
@@ -64,6 +64,9 @@ class expressionToCell
 
         //- The logical expression to use
         string expression_;
+
+        //- dictionary with additional data
+        autoPtr<dictionary> dict_;
 
         void combine(topoSet& set, const bool add) const;
 
