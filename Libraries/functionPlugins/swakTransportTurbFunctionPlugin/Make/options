@@ -7,11 +7,13 @@ EXE_INC = \
     $(FOAM_DEV_OPTION) 	\
     -I../../swak4FoamParsers/lnInclude \
     -I$(LIB_SRC)/finiteVolume/lnInclude \
+    -I$(LIB_SRC)/meshTools/lnInclude \
     -I$(LIB_SRC)/turbulenceModels/ \
     -I$(LIB_SRC)/turbulenceModels/LES/LESdeltas/lnInclude \
     -I$(LIB_SRC)/turbulenceModels/incompressible/turbulenceModel/lnInclude/ \
     -I$(LIB_SRC)/turbulenceModels/incompressible/LES/lnInclude/ \
     -I$(LIB_SRC)/turbulenceModels/incompressible/RAS/lnInclude/ \
+    -I$(LIB_SRC)/sampling/lnInclude \
     -I$(LIB_SRC)/transportModels/ \
     -I$(LIB_SRC)/transportModels/incompressible/lnInclude
 

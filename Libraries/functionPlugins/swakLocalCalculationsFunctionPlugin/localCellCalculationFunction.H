@@ -36,7 +36,10 @@ Description
 SourceFiles
     localCellCalculationFunction.C
 
- ICE Revision: $Id: localCellCalculationFunction.H,v 5a4afaf6ce41 2012-07-17 09:35:50Z bgschaid $
+Contributors/Copyright:
+    2012-2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+
+ SWAK Revision: $Id$
 \*---------------------------------------------------------------------------*/
 
 #ifndef localCellCalculationFunction_H

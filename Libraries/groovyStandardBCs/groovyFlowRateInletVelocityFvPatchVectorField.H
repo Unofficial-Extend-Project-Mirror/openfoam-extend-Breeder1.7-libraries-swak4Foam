@@ -35,7 +35,10 @@ Description
 SourceFiles
     groovyFlowRateInletVelocityFvPatchVectorField.C
 
- ICE Revision: $Id: groovyFlowRateInletVelocityFvPatchVectorField.H,v b62fab3bce62 2011-02-22 19:50:22Z bgschaid $ 
+Contributors/Copyright:
+    2011, 2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+
+ SWAK Revision: $Id$ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef groovyFlowRateInletVelocityFvPatchVectorField_H

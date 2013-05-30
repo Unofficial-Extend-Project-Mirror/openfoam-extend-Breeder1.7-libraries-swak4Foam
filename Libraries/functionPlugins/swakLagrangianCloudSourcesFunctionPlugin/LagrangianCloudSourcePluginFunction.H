@@ -36,7 +36,10 @@ Description
 SourceFiles
     LagrangianCloudSourcePluginFunction.C
 
- ICE Revision: $Id: LagrangianCloudSourcePluginFunction.H,v 1ff2da6f795d 2012-09-12 17:16:23Z bgschaid $
+Contributors/Copyright:
+    2012-2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+
+ SWAK Revision: $Id$
 \*---------------------------------------------------------------------------*/
 
 #ifndef LagrangianCloudSourcePluginFunction_H

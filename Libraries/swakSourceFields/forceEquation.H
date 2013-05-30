@@ -36,7 +36,10 @@ Description
 SourceFiles
     forceEquation.C
 
- ICE Revision: $Id: forceEquation.H,v 4ac16d2f82d4 2011-03-12 01:20:08Z bgschaid $ 
+Contributors/Copyright:
+    2011, 2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+
+ SWAK Revision: $Id$ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef forceEquation_H

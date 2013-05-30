@@ -36,7 +36,10 @@ Description
 SourceFiles
     expressionToPoint.C
 
- ICE Revision: $Id: expressionToPoint.H,v 514dd427a5e3 2012-05-02 22:09:14Z bgschaid $ 
+Contributors/Copyright:
+    2012-2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+
+ SWAK Revision: $Id$ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef expressionToPoint_H

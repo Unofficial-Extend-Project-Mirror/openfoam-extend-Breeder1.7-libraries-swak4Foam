@@ -86,6 +86,13 @@ fi
 
 wmake libso swak4FoamParsers
 
+PARSERSOK=$?
+
+if [[ $PARSERSOK != 0 ]]; then
+    echo "Parser library did not compile OK. No sense continuing as everything else depends on it"
+    exit 42
+fi
+
 wmake libso groovyBC
 
 wmake libso swakFunctionObjects
@@ -135,7 +142,19 @@ wmake libso groovyStandardBCs
 
 if [ "$SWAK_PYTHON_INCLUDE" != "" ]
 then
-    wmake libso pythonIntegration
+    SOEXT=so
+
+    if [ `uname -s`=="Darwin" ]; then
+	SOEXT=dylib
+    fi
+
+    oldPython="$FOAM_USER_LIBBIN/libpythonIntegration.$SOEXT"
+    if [ -e $oldPython ]
+    then
+	echo "Removing old python integration $oldPython"
+	rm $oldPython
+    fi
+    wmake libso swakPythonIntegration
 else
     echo "SWAK_PYTHON_INCLUDE not defined .... no Python-Integration"
 fi

@@ -36,7 +36,10 @@ Description
 SourceFiles
     groovyTotalPressureFvPatchScalarField.C
 
- ICE Revision: $Id: groovyTotalPressureFvPatchScalarField.H,v fbd97a59aedb 2011-02-21 22:09:40Z bgschaid $ 
+Contributors/Copyright:
+    2011, 2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+
+ SWAK Revision: $Id$ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef groovyTotalPressureFvPatchScalarField_H

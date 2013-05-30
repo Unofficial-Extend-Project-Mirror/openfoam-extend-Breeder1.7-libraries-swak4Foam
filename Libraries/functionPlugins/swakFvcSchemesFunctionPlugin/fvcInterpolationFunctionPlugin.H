@@ -36,7 +36,10 @@ Description
 SourceFiles
     fvcInterpolationFunctionPlugin.C
 
- ICE Revision: $Id: fvcInterpolationFunctionPlugin.H,v 648b1dfab5b6 2012-07-17 17:30:49Z bgschaid $
+Contributors/Copyright:
+    2012-2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+
+ SWAK Revision: $Id$
 \*---------------------------------------------------------------------------*/
 
 #ifndef fvcInterpolationFunctionPlugin_H

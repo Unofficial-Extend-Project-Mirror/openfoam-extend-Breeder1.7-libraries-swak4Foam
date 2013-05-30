@@ -38,7 +38,10 @@ SourceFiles
     StoredExpressionResult.C
     StoredExpressionResultIO.C
 
- ICE Revision: $Id: StoredExpressionResult.H,v 72b65257bb74 2012-10-02 16:06:41Z bgschaid $
+Contributors/Copyright:
+    2012-2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+
+ SWAK Revision: $Id$
 \*---------------------------------------------------------------------------*/
 
 #ifndef StoredExpressionResult_H

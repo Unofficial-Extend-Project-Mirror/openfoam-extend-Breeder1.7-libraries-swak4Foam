@@ -38,7 +38,10 @@ SourceFiles
     DelayedExpressionResult.C
     DelayedExpressionResultIO.C
 
- ICE Revision: $Id: DelayedExpressionResult.H,v c46be089e947 2012-10-03 13:20:09Z bgschaid $
+Contributors/Copyright:
+    2012-2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+
+ SWAK Revision: $Id$
 \*---------------------------------------------------------------------------*/
 
 #ifndef DelayedExpressionResult_H

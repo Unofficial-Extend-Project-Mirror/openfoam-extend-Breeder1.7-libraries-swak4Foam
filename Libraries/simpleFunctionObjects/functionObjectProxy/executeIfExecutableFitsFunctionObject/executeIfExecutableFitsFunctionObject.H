@@ -1,5 +1,10 @@
-//  OF-extend Revision: $Id: executeIfExecutableFitsFunctionObject.H,v fe7f781404b0 2011-11-16 22:14:01Z bgschaid $ 
 /*---------------------------------------------------------------------------*\
+ ##   ####  ######     |
+ ##  ##     ##         | Copyright: ICE Stroemungsfoschungs GmbH
+ ##  ##     ####       |
+ ##  ##     ##         | http://www.ice-sf.at
+ ##   ####  ######     |
+-------------------------------------------------------------------------------
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
@@ -34,6 +39,10 @@ Description
 SourceFiles
     executeIfExecutableFitsFunctionObject.C
 
+Contributors/Copyright:
+    2011, 2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+
+ SWAK Revision: $Id$ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef executeIfExecutableFitsFunctionObject_H

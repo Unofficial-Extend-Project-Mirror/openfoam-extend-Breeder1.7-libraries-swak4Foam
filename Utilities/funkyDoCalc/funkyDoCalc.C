@@ -33,7 +33,10 @@ Application
 
 Description
 
- ICE Revision: $Id: funkyDoCalc.C,v ed7c0c933db3 2012-08-10 13:17:18Z bgschaid $
+Contributors/Copyright:
+    2011-2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+
+ SWAK Revision: $Id$
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
@@ -52,7 +55,9 @@ void writeData(
     const wordList &accumulations
 )
 {
-    Field<T> result=driver.getResult<T>();
+    bool isPoint=driver.result().isPoint();
+
+    Field<T> result=driver.getResult<T>(isPoint);
 
     forAll(accumulations,i) {
         const word &aName=accumulations[i];
@@ -86,13 +91,17 @@ int main(int argc, char *argv[])
     Foam::timeSelector::addOptions(false);
     Foam::argList::validArgs.append("expressionDict");
 #   include "addRegionOption.H"
+    argList::validOptions.insert("noDimensionChecking","");
+    argList::validOptions.insert("foreignMeshesThatFollowTime",
+                                  "<list of mesh names>");
 
 #   include "setRootCase.H"
 
     printSwakVersion();
 
-   IFstream theFile(args.args()[1]);
-   dictionary theExpressions(theFile);
+    IFstream theFile(args.args()[1]);
+    dictionary theExpressions(theFile);
+    wordList foreignMeshesThatFollowTime(0);
 
     if (!args.options().found("time") && !args.options().found("latestTime")) {
         FatalErrorIn("main()")
@@ -101,10 +110,28 @@ int main(int argc, char *argv[])
             << exit(FatalError);
     }
 
+    if(args.options().found("noDimensionChecking")) {
+        dimensionSet::debug=0;
+    }
+    if(args.options().found("foreignMeshesThatFollowTime")) {
+        string followMeshes(
+            args.options()["foreignMeshesThatFollowTime"]
+        );
+        IStringStream followStream("("+followMeshes+")");
+        foreignMeshesThatFollowTime=wordList(followStream);
+    }
+
 #   include "createTime.H"
     Foam::instantList timeDirs = Foam::timeSelector::select0(runTime, args);
 
 #   include "createNamedMesh.H"
+
+    forAllConstIter(IDLList<entry>, theExpressions, iter)
+    {
+        const dictionary &dict=iter().dict();
+
+        CommonValueExpressionDriver::readForeignMeshInfo(dict);
+    }
 
     forAll(timeDirs, timeI)
     {
@@ -113,6 +140,26 @@ int main(int argc, char *argv[])
         Foam::Info << "\nTime = " << runTime.timeName() << Foam::endl;
 
         mesh.readUpdate();
+
+        forAll(foreignMeshesThatFollowTime,i) {
+            const word &name=foreignMeshesThatFollowTime[i];
+            if(MeshesRepository::getRepository().hasMesh(name)) {
+                Info << "Setting mesh " << name << " to current Time"
+                    << endl;
+
+                MeshesRepository::getRepository().setTime(
+                    name,
+                    runTime.value()
+                );
+            } else {
+                FatalErrorIn(args.executable())
+                    << "No mesh with name " << name << " declared. " << nl
+                        << "Can't follow current time"
+                        << endl
+                        << exit(FatalError);
+
+            }
+        }
 
         forAllConstIter(IDLList<entry>, theExpressions, iter)
         {

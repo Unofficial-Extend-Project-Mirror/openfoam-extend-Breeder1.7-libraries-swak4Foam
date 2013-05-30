@@ -36,7 +36,10 @@ Description
 SourceFiles
     groovyBCPointPatchField.C
 
- ICE Revision: $Id: groovyBCPointPatchField.H,v 04da3db3fb3b 2011-02-04 17:23:00Z bgschaid $ 
+Contributors/Copyright:
+    2010-2011, 2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+
+ SWAK Revision: $Id$ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef groovyBCPointPatchField_H

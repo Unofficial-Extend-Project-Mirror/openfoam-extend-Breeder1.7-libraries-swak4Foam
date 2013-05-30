@@ -36,7 +36,10 @@ Description
 SourceFiles
     ConcretePluginFunction.C
 
- ICE Revision: $Id: ConcretePluginFunction.H,v b672c63d5589 2012-08-06 00:08:01Z bgschaid $
+Contributors/Copyright:
+    2012-2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+
+ SWAK Revision: $Id$
 \*---------------------------------------------------------------------------*/
 
 #ifndef ConcretePluginFunction_H

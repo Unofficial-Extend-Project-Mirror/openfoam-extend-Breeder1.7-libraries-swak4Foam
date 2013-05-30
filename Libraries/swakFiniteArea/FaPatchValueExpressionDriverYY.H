@@ -37,7 +37,10 @@ SourceFiles
     FaPatchValueExpressionDriverI.H
     FaPatchValueExpressionDriver.C
 
- ICE Revision: $Id: FaPatchValueExpressionDriverYY.H,v 792e969911d8 2012-08-07 22:42:08Z bgschaid $
+Contributors/Copyright:
+    2010, 2012-2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+
+ SWAK Revision: $Id$
 \*---------------------------------------------------------------------------*/
 
 #ifndef FaPatchValueExpressionDriverYY_H

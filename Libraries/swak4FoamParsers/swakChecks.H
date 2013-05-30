@@ -32,7 +32,10 @@ License
 Description
     Checks for the swak-Grammars
 
- ICE Revision: $Id: swakChecks.H,v 672f523a42b0 2011-04-10 13:52:38Z bgschaid $ 
+Contributors/Copyright:
+    2011, 2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+
+ SWAK Revision: $Id$ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef swakChecks_H

@@ -1,5 +1,10 @@
-//  OF-extend Revision: $Id: EvolveKinematicCloudFunctionObject.H,v 20f9816bda4c 2012-09-09 20:17:24Z bgschaid $
 /*---------------------------------------------------------------------------*\
+ ##   ####  ######     |
+ ##  ##     ##         | Copyright: ICE Stroemungsfoschungs GmbH
+ ##  ##     ####       |
+ ##  ##     ##         | http://www.ice-sf.at
+ ##   ####  ######     |
+-------------------------------------------------------------------------------
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     |
@@ -33,6 +38,10 @@ Description
 SourceFiles
     EvolveKinematicCloudFunctionObject.C
 
+Contributors/Copyright:
+    2012-2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+
+ SWAK Revision: $Id:  $ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef EvolveKinematicCloudFunctionObject_H

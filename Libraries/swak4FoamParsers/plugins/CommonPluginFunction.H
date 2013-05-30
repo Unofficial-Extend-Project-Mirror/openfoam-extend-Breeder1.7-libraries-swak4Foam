@@ -38,7 +38,10 @@ SourceFiles
     CommonPluginFunction.C
     CommonPluginFunctionIO.C
 
- ICE Revision: $Id: CommonPluginFunction.H,v 7e33bf0d6ef6 2012-09-06 15:09:41Z bgschaid $
+Contributors/Copyright:
+    2012-2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+
+ SWAK Revision: $Id$
 \*---------------------------------------------------------------------------*/
 
 #ifndef CommonPluginFunction_H

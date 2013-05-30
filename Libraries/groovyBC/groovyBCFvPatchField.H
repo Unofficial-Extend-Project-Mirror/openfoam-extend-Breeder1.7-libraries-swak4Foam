@@ -1,5 +1,5 @@
 /*---------------------------------------------------------------------------*\
- ##   ####  ######     | 
+ ##   ####  ######     |
  ##  ##     ##         | Copyright: ICE Stroemungsfoschungs GmbH
  ##  ##     ####       |
  ##  ##     ##         | http://www.ice-sf.at
@@ -37,7 +37,10 @@ Description
 SourceFiles
     groovyBCFvPatchField.C
 
- ICE Revision: $Id: groovyBCFvPatchField.H,v 3b55bee48cda 2011-02-04 16:59:33Z bgschaid $ 
+Contributors/Copyright:
+    2009-2011, 2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+
+ SWAK Revision: $Id$
 \*---------------------------------------------------------------------------*/
 
 #ifndef groovyBCFvPatchField_H

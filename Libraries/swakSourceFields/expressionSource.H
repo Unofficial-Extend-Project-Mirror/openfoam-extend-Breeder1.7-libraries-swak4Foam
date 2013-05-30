@@ -36,7 +36,10 @@ Description
 SourceFiles
     expressionSource.C
 
- ICE Revision: $Id: expressionSource.H,v 6f57b966892c 2010-09-07 18:11:05Z bgschaid $ 
+Contributors/Copyright:
+    2010, 2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+
+ SWAK Revision: $Id$ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef expressionSource_H

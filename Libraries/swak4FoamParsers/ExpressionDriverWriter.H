@@ -38,7 +38,10 @@ SourceFiles
     ExpressionDriverWriter
 .C
 
- ICE Revision: $Id: ExpressionDriverWriter.H,v d452226964d7 2011-10-20 19:06:35Z bgschaid $ 
+Contributors/Copyright:
+    2011, 2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+
+ SWAK Revision: $Id$ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef ExpressionDriverWriter_H

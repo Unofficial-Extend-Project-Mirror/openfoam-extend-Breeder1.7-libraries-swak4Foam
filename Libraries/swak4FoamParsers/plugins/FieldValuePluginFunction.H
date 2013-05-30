@@ -36,7 +36,10 @@ Description
 SourceFiles
     FieldValuePluginFunction.C
 
- ICE Revision: $Id: FieldValuePluginFunction.H,v c44fe0e5bd98 2012-08-01 23:13:56Z bgschaid $
+Contributors/Copyright:
+    2012-2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+
+ SWAK Revision: $Id$
 \*---------------------------------------------------------------------------*/
 
 #ifndef FieldValuePluginFunction_H

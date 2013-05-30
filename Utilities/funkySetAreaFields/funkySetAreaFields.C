@@ -33,7 +33,11 @@ Application
 
 Description
 
- ICE Revision: $Id: funkySetAreaFields.C,v 792e969911d8 2012-08-07 22:42:08Z bgschaid $
+Contributors/Copyright:
+    2011 Petr Vita <petr.vita@unileoben.ac.at>
+    2011-2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+
+ SWAK Revision: $Id$
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"

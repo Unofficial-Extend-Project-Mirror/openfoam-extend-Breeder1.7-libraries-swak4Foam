@@ -37,7 +37,10 @@ SourceFiles
     FaCommonValueExpressionDriverI.H
     FaCommonValueExpressionDriver.C
 
- ICE Revision: $Id: FaCommonValueExpressionDriver.H,v 3ecd1c60c2be 2012-08-08 11:36:05Z bgschaid $
+Contributors/Copyright:
+    2010-2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+
+ SWAK Revision: $Id$
 \*---------------------------------------------------------------------------*/
 
 #ifndef FaCommonValueExpressionDriver_H

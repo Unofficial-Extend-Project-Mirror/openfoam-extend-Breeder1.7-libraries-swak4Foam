@@ -37,7 +37,10 @@ Description
 SourceFiles
     groovyBCCommon.C
 
- ICE Revision: $Id: groovyBCCommon.H,v 272ca1bf919e 2011-11-14 23:24:38Z bgschaid $ 
+Contributors/Copyright:
+    2011, 2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+
+ SWAK Revision: $Id$ 
 \*---------------------------------------------------------------------------*/
 
 #ifndef groovyBCCommon_H
