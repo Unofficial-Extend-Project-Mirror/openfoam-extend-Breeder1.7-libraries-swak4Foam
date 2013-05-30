@@ -1756,3 +1756,27 @@ S_{expl} + S_{impl} T
 **** Start of the reference-manual
      A first version of a reference manual is added. Only the first
      part about expressions and parameters is written.
+** 2013-03-18 - version number : 0.2.3
+*** Bug fixes
+**** Compiles on =1.6-ext= again
+     The last release (0.2.2) did not compile on =1.6-ext=. This is
+     fixed
+*** New features
+**** Writing of sampled surfaces and sampled sets
+     With the options =autoWriteSurface= and =autoWriteSets= sampled
+     surfaces and sets are automatically written at each write
+     time. With =writeSurfaceOnConstruction= and
+     =writeSetOnConstruction= both are written when they are
+     created. A format has to be specified. No values are written.
+*** Enhancements
+**** Parsers now support =eigenValues= and =eigenVectors=
+     These function and some other minor ones (=sph=, =dev2=,
+     =twoSymm=) are now supported by the parsers
+**** Extract rows from tensors with component operator
+     The component operators =.x=, =.y= and =.z= now extract the rows
+     from a tensor
+**** Variable names that are identical to fields trigger a Warning
+     As this situation (like a variable named =p= for the position
+     that shadows the pressure field =p=) leads to weird errors a
+     warning is given. The warning can be switched of with the option
+     =variableNameIdenticalToField=.
