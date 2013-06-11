@@ -40,7 +40,7 @@ SourceFiles
 Contributors/Copyright:
     2008-2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
 
- SWAK Revision: $Id$ 
+ SWAK Revision: $Id$
 \*---------------------------------------------------------------------------*/
 
 #ifndef simpleFunctionObject_H
@@ -52,6 +52,7 @@ Contributors/Copyright:
 #include "HashPtrTable.H"
 #include "boolList.H"
 #include "Field.H"
+#include "NamedEnum.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -68,11 +69,18 @@ class simpleFunctionObject
 :
     public functionObject
 {
+public:
+    enum outputControlMode {
+        ocmTimestep,
+        ocmDeltaT,
+        ocmOutputTime
+    };
+private:
     // Private Member Functions
 
     //- Disallow default bitwise copy construct
     simpleFunctionObject(const simpleFunctionObject&);
-    
+
     //- Disallow default bitwise assignment
     void operator=(const simpleFunctionObject&);
 
@@ -90,10 +98,19 @@ class simpleFunctionObject
     //- how many time-steps since last output
     label timeSteps_;
 
+    //- possible outputControl-modes
+    static const NamedEnum<outputControlMode,3> outputControlModeNames_;
+    outputControlMode outputControlMode_;
+
     //- how many time-steps between outputs
     label outputInterval_;
 
+    //- deltaT for output
+    scalar outputDeltaT_;
+
     const Time& time_;
+
+    scalar lastWrite_;
 
 protected:
 
@@ -156,7 +173,10 @@ public:
     //- the actual time
     scalar after() const { return after_; }
 
-    const objectRegistry &obr() { return obr_; }
+    const objectRegistry &obr() const { return obr_; }
+
+    const dictionary &dict() const { return dict_; }
+
 };
 
 

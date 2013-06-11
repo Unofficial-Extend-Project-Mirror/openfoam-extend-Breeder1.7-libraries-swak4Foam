@@ -61,8 +61,17 @@ namespace Foam {
 namespace Foam {
 
    template<class Type>
-    tmp<Field<Type> > PatchValueExpressionDriver::getField(const string &name)
+    tmp<Field<Type> > PatchValueExpressionDriver::getField(const word &inName)
     {
+        word name(inName);
+        if(this->hasAlias(name)) {
+            if(debug) {
+                Pout << "PatchValueExpressionDriver::getField. Name: " << name
+                    << " is an alias for " << this->getAlias(name) << endl;
+            }
+            name=this->getAlias(name);
+        }
+
         typedef GeometricField<Type,fvPatchField,volMesh> localVolField;
         typedef GeometricField<Type,fvsPatchField,surfaceMesh> localSurfaceField;
         typedef GeometricField<Type,pointPatchField,pointMesh> localPointField;
@@ -183,7 +192,7 @@ namespace Foam {
 
             return pField.patchInternalField();
         } else{
-            FatalErrorIn("tmp<Field<Type> > PatchValueExpressionDriver::getField(const string &name)")
+            FatalErrorIn("tmp<Field<Type> > PatchValueExpressionDriver::getField(const word &name)")
                 << "No field of type " << pTraits<Type>::typeName
                     << " with the name " << name << " found\n"
                     << endl
@@ -209,9 +218,18 @@ namespace Foam {
 
     template<class Type>
     tmp<Field<Type> > PatchValueExpressionDriver::getOldTimeField(
-        const string &name
+        const word &inName
     )
     {
+        word name(inName);
+        if(this->hasAlias(name)) {
+            if(debug) {
+                Pout << "PatchValueExpressionDriver::getOldTimeField. Name: " << name
+                    << " is an alias for " << this->getAlias(name) << endl;
+            }
+            name=this->getAlias(name);
+        }
+
         typedef GeometricField<Type,fvPatchField,volMesh> localVolField;
         typedef GeometricField<Type,fvsPatchField,surfaceMesh>
             localSurfaceField;
@@ -277,7 +295,7 @@ namespace Foam {
                 new Field<Type>(pField.patchInternalField())
             );
         } else{
-            FatalErrorIn("tmp<Field<Type> > PatchValueExpressionDriver::getOldTimeField(const string &name)")
+            FatalErrorIn("tmp<Field<Type> > PatchValueExpressionDriver::getOldTimeField(const word &name)")
                 << "No field of type " << pTraits<Type>::typeName
                     << " with the name " << name << " found\n"
                     << endl
@@ -289,9 +307,18 @@ namespace Foam {
 
     template<class Type>
     tmp<Field<Type> > PatchValueExpressionDriver::getPatchInternalField(
-        const string &name
+        const word &inName
     )
     {
+        word name(inName);
+        if(this->hasAlias(name)) {
+            if(debug) {
+                Pout << "PatchValueExpressionDriver::getPatchInternalField. Name: " << name
+                    << " is an alias for " << this->getAlias(name) << endl;
+            }
+            name=this->getAlias(name);
+        }
+
         typedef GeometricField<Type,fvPatchField,volMesh> localVolField;
         typedef GeometricField<Type,pointPatchField,pointMesh> localPointField;
 
@@ -328,7 +355,7 @@ namespace Foam {
                 patch_.lookupPatchField<localPointField,Type>(name);
             return pField.patchInternalField();
         } else{
-            FatalErrorIn("tmp<Field<Type> > PatchValueExpressionDriver::getPatchInternalField(const string &name)")
+            FatalErrorIn("tmp<Field<Type> > PatchValueExpressionDriver::getPatchInternalField(const word &name)")
                 << "No field of type " << pTraits<Type>::typeName
                     << " with the name " << name << " found or unsupported type for patchInternalField\n"
                     << endl
@@ -342,9 +369,18 @@ namespace Foam {
 
     template<class Type>
     tmp<Field<Type> > PatchValueExpressionDriver::getPatchNeighbourField(
-        const string &name
+        const word &inName
     )
     {
+        word name(inName);
+        if(this->hasAlias(name)) {
+            if(debug) {
+                Pout << "PatchValueExpressionDriver::getPatchNeighbourField. Name: " << name
+                    << " is an alias for " << this->getAlias(name) << endl;
+            }
+            name=this->getAlias(name);
+        }
+
         typedef GeometricField<Type,fvPatchField,volMesh> localVolField;
 
         if(
@@ -373,7 +409,7 @@ namespace Foam {
                 patch_.lookupPatchField<localVolField,Type>(name);
             return pField.patchNeighbourField();
         } else{
-            FatalErrorIn("tmp<Field<Type> > PatchValueExpressionDriver::getPatchNeighbourField(const string &name)")
+            FatalErrorIn("tmp<Field<Type> > PatchValueExpressionDriver::getPatchNeighbourField(const word &name)")
                 << "No field of type " << pTraits<Type>::typeName
                     << " with the name " << name
                     << " found or unsupported type for patchNeighbourField\n"
@@ -388,9 +424,18 @@ namespace Foam {
 
     template<class Type>
     tmp<Field<Type> > PatchValueExpressionDriver::getSurfaceNormalField(
-        const string &name
+        const word &inName
     )
     {
+        word name(inName);
+        if(this->hasAlias(name)) {
+            if(debug) {
+                Pout << "PatchValueExpressionDriver::getSurfaceNormalField. Name: " << name
+                    << " is an alias for " << this->getAlias(name) << endl;
+            }
+            name=this->getAlias(name);
+        }
+
         typedef GeometricField<Type,fvPatchField,volMesh> localVolField;
 
         autoPtr<localVolField> dummy; // hold on to the field until the calculation is finished
@@ -411,7 +456,7 @@ namespace Foam {
                 patch_.lookupPatchField<localVolField,Type>(name);
             return pField.snGrad();
         } else{
-            FatalErrorIn("tmp<Field<Type> > PatchValueExpressionDriver::getSurfaceNormalField(const string &name)")
+            FatalErrorIn("tmp<Field<Type> > PatchValueExpressionDriver::getSurfaceNormalField(const word &name)")
                 << "No field of type " << pTraits<Type>::typeName
                     << "( " << pTraits<localVolField>::typeName << ")"
                     << " with the name " << name
@@ -481,9 +526,18 @@ namespace Foam {
 
     template<class T>
     tmp<Field<T> > PatchValueExpressionDriver::mapField(
-        const word &name,
+        const word &inName,
         bool internalField
     ) {
+        word name(inName);
+        if(this->hasAlias(name)) {
+            if(debug) {
+                Pout << "PatchValueExpressionDriver::mapField. Name: " << name
+                    << " is an alias for " << this->getAlias(name) << endl;
+            }
+            name=this->getAlias(name);
+        }
+
         if(debug) {
             Info << "Mapping " << name << " with result of type "
                 << pTraits<T>::typeName << endl;
@@ -852,8 +906,17 @@ namespace Foam {
 
     template<class T>
     tmp<Field<T> > PatchValueExpressionDriver::mapPointField(
-        const word &name
+        const word &inName
     ) {
+        word name(inName);
+        if(this->hasAlias(name)) {
+            if(debug) {
+                Pout << "PatchValueExpressionDriver::mapPointField. Name: " << name
+                    << " is an alias for " << this->getAlias(name) << endl;
+            }
+            name=this->getAlias(name);
+        }
+
         typedef GeometricField<T,pointPatchField,pointMesh> localPointField;
 
         // dummy implemntation

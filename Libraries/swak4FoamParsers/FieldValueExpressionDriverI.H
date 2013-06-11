@@ -66,7 +66,7 @@ Contributors/Copyright:
 namespace Foam {
 
 template<class T>
-tmp<T>  FieldValueExpressionDriver::getField(const string &name,bool getOldTime)
+tmp<T>  FieldValueExpressionDriver::getField(const word &name,bool getOldTime)
 {
     return tmp<T>(
         this->getOrReadField<T>(
@@ -79,7 +79,7 @@ tmp<T>  FieldValueExpressionDriver::getField(const string &name,bool getOldTime)
 
 template<class T>
 tmp<T>  FieldValueExpressionDriver::getPointField(
-    const string &name,
+    const word &name,
     bool getOldTime
 )
 {
@@ -604,7 +604,8 @@ inline tmp<FType> FieldValueExpressionDriver::makeFieldInternal(
                 this->time(),
                 this->mesh(),
                 IOobject::NO_READ,
-                IOobject::NO_WRITE
+                IOobject::NO_WRITE,
+                false // don't register
             ),
             actualMesh,
             pTraits<typename FType::value_type>::zero,
@@ -680,7 +681,8 @@ inline tmp<FType> FieldValueExpressionDriver::makeConstantFieldInternal(
                 time(),
                 mesh_,
                 IOobject::NO_READ,
-                IOobject::NO_WRITE
+                IOobject::NO_WRITE,
+                false // don't register
             ),
             mesh,
             val,
