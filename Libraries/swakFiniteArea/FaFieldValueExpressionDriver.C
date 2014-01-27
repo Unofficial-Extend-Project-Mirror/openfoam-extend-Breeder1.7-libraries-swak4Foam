@@ -25,7 +25,7 @@ Description
 
 
 Contributors/Copyright:
-    2011-2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+    2011-2014 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
 
  SWAK Revision: $Id$
 \*---------------------------------------------------------------------------*/
@@ -774,7 +774,7 @@ tmp<scalarField> FaFieldValueExpressionDriver::weightsNonPoint(
     bool isFace=(size==faceSize);
     reduce(isFace,andOp<bool>());
 
-    if(!faceSize) {
+    if(!isFace) {
         Pout << "Expected size: " << size
             << " Face size: " << faceSize << endl;
 

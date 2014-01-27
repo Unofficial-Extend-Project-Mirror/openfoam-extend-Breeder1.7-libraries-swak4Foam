@@ -38,7 +38,7 @@ Description
 SourceFiles
 
 Contributors/Copyright:
-    2012-2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+    2012-2014 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
 
  SWAK Revision: $Id$
 \*---------------------------------------------------------------------------*/
@@ -60,7 +60,12 @@ Contributors/Copyright:
 
 // in 1.6-ext the operation s1 & s2 of two symmetrical tensor fields does not yield a symmetric tensor
 #ifdef FOAM_DEV
-// #define FOAM_SYMMTENSOR_WORKAROUND
+#define FOAM_SYMMTENSOR_WORKAROUND
+#endif
+
+// in 1.6-ext nextRelease a different Macro is used for the creation of certain patch types
+#ifdef FOAM_DEV
+#define FOAM_USE_MAKE_TEMPLATE_PATCH_TYPE
 #endif
 
 // Certain OpenFOAM-versions don't have all tensor operations defined
@@ -68,7 +73,24 @@ Contributors/Copyright:
 #define FOAM_INCOMPLETE_OPERATORS
 #endif
 
+// Certain OpenFOAM-versions don't have this method in fvMesh
+#if FOAM_VERSION4SWAK_MAJOR<2 &&  FOAM_VERSION4SWAK_MINOR<7
+#define FOAM_FV_MESH_HAS_NO_SOLVERDICT
+#endif
+
+// Additional tensor types in nextRelease
+#ifdef FOAM_DEV
+#define FOAM_DEV_ADDITIONAL_TENSOR_TYPES
+#endif
+
+// The kineamticPArcel has no property active in 1.6-ext
+#ifdef FOAM_DEV
+#define FOAM_KINEMTATIC_HAS_NO_ACTIVE_PROPERTY
+#endif
+
 #include "swakVersion.H"
+
+#include "DebugOStream.H"
 
 #endif
 

@@ -38,7 +38,7 @@ SourceFiles
     EvolveCloudFunctionObject.C
 
 Contributors/Copyright:
-    2012-2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+    2012-2014 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
 
  SWAK Revision: $Id:  $ 
 \*---------------------------------------------------------------------------*/
@@ -103,7 +103,7 @@ protected:
 
     autoPtr<CloudType> &cloud() { return cloud_; }
 
-    const dimensionedVector g() const { return g_; }
+    const dimensionedVector &g() const { return g_; }
 
     const objectRegistry &obr() const { return obr_; }
 
