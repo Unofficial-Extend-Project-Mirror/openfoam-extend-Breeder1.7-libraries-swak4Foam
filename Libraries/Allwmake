@@ -7,6 +7,7 @@ if [[ $NOBISON != 0 ]]; then
     echo
     echo "No 'bison' found. This is absolutely essential for swak4Foam. Can't go on"
     echo "Every Linux has a binary package that installs bison (http://www.gnu.org/software/bison/). Install it. Then go on"
+    echo "As an alternative you can install a local copy of bison by running ./maintainanceScripts/compileRequirements.sh from the installation directory"
     echo "BTW: it was listed as a requirement in the README. You read that, didn't you?"
     echo
     exit 42
@@ -31,6 +32,7 @@ echo "Bison is version $BISONVER"
 if [[ $BISONVER < 2.4 ]]; then
     echo "swak4Foam only confirmed to work with Bison >= 2.4"
     echo "Compiles with 2.3 but has offset-problems with locations which break the Plugin-functionality"
+    echo "Consider running ./maintainanceScripts/compileRequirements.sh for a local bison-installation"
     if [ -z $USE_OLD_BISON ]; then
 	echo "Set the environment variable USE_OLD_BISON if you want to continue anyway"
 	exit 42
@@ -43,6 +45,7 @@ fi
 
 if [[ $BISONVER > 2.999 ]]; then
     echo "swak4Foam only confirmed to work with Bison 2.x"
+    echo "Consider running ./maintainanceScripts/compileRequirements.sh for a local bison-installation"
     if [ -z $DEVELOPE_FOR_NEW_BISON ]; then
 	echo "Set the environment variable DEVELOPE_FOR_NEW_BISON if you want to continue anyway."
 	exit 42
@@ -69,7 +72,13 @@ fi
 of_version_major=`echo $WM_PROJECT_VERSION | sed -e 's=\([0-9]*\).*=\1='`
 of_version_minor=`echo $WM_PROJECT_VERSION | sed -e 's=[0-9]*\.\([0-9]*\).*=\1='`
 of_version_patch=`echo $WM_PROJECT_VERSION | sed -e 's=[0-9]*\.[0-9]*\.\([0-9a-z]*\).*=\1='`
-echo "OpenFOAM-version: Major $of_version_major Minor $of_version_minor Patch $of_version_patch"
+if [[ $of_version_patch == "x"  ]]; then
+    of_version_patch_num=99
+else
+    of_version_patch_num=$of_version_patch
+fi
+
+echo "OpenFOAM-version: Major $of_version_major Minor $of_version_minor Patch $of_version_patch ($of_version_patch_num)"
 
 versionFile=swak4FoamParsers/foamVersion4swak.H
 
@@ -81,6 +90,7 @@ cat >$versionFile.tmp <<EOF
 #define FOAM_VERSION4SWAK_MAJOR $of_version_major
 #define FOAM_VERSION4SWAK_MINOR $of_version_minor
 #define FOAM_VERSION4SWAK_PATCH $of_version_patch
+#define FOAM_VERSION4SWAK_PATCH_NUM $of_version_patch_num
 
 #endif
 EOF

@@ -38,7 +38,7 @@ SourceFiles
     solvePDECommon.C
 
 Contributors/Copyright:
-    2011, 2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+    2011, 2013-2014 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
     2013 Bruno Santos <wyldckat@gmail.com>
 
  SWAK Revision: $Id:  $
@@ -51,6 +51,8 @@ Contributors/Copyright:
 #include "pointFieldFwd.H"
 #include "NamedEnum.H"
 #include "volFields.H"
+
+#include "exprString.H"
 
 namespace Foam
 {
@@ -98,6 +100,14 @@ protected:
 
     //- should we relax?
     bool doRelax(bool last);
+
+    //- read expression and dimension
+    void readExpressionAndDimension(
+        const dictionary &dict,
+        const word &name,
+        exprString &expr,
+        dimensionSet &dim
+    );
 
 private:
     //- do the actual solving

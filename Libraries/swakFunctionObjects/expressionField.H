@@ -38,10 +38,10 @@ SourceFiles
     expressionField.C
 
 Contributors/Copyright:
-    2010-2011, 2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+    2010-2011, 2013-2014 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
     2013 Bruno Santos <wyldckat@gmail.com>
 
- SWAK Revision: $Id:  $ 
+ SWAK Revision: $Id:  $
 \*---------------------------------------------------------------------------*/
 
 #ifndef expressionField_H
@@ -53,6 +53,9 @@ Contributors/Copyright:
 #include "Switch.H"
 #include "autoPtr.H"
 #include "dictionary.H"
+#include "dimensionSet.H"
+
+#include "exprString.H"
 
 namespace Foam
 {
@@ -68,7 +71,7 @@ class expressionField
 {
     //- Disallow default bitwise copy construct
     expressionField(const expressionField&);
-    
+
     //- Disallow default bitwise assignment
     void operator=(const expressionField&);
 
@@ -83,7 +86,7 @@ protected:
     word name_;
 
     //- Expression
-    string expression_;
+    exprString expression_;
 
     //- should the file be autowrite
     Switch autowrite_;
@@ -101,6 +104,10 @@ protected:
 
     autoPtr<FieldValueExpressionDriver> driver_;
 
+    dimensionSet dimensions_;
+
+    bool setDimensions_;
+
 public:
 
     //- Runtime type information
@@ -108,7 +115,7 @@ public:
 
 
     // Constructors
-    
+
     //- Construct for given objectRegistry and dictionary.
     //  Allow the possibility to load fields from files
     expressionField
@@ -134,20 +141,20 @@ public:
 
     //- Read the forces data
     virtual void read(const dictionary&);
-    
+
     //- Execute, currently does nothing
     virtual void execute();
-    
+
     //- Execute at the final time-loop, currently does nothing
     virtual void end();
-    
+
     //- Write the forces
     virtual void write();
 
     //- Update for changes of mesh
     virtual void updateMesh(const mapPolyMesh&)
         {}
-    
+
     //- Update for changes of mesh
     virtual void movePoints(const pointField&)
         {}

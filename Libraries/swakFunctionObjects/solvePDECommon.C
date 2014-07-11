@@ -29,7 +29,7 @@ License
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 Contributors/Copyright:
-    2011, 2013 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+    2011, 2013-2014 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
     2013 Bruno Santos <wyldckat@gmail.com>
 
  SWAK Revision: $Id:  $
@@ -78,6 +78,23 @@ Foam::solvePDECommon::solvePDECommon
 
 Foam::solvePDECommon::~solvePDECommon()
 {}
+
+void Foam::solvePDECommon::readExpressionAndDimension(
+    const dictionary &dict,
+    const word &name,
+    exprString &expr,
+    dimensionSet &dim
+)
+{
+    ITstream in(dict.lookup(name));
+
+    expr=exprString(
+        in,
+        dict
+    );
+
+    in >> dim;
+}
 
 bool Foam::solvePDECommon::doRelax(bool last)
 {
