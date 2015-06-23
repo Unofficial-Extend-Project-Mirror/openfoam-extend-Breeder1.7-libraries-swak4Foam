@@ -29,7 +29,7 @@ License
     Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 Contributors/Copyright:
-    2010-2014 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
+    2010-2015 Bernhard F.W. Gschaider <bgschaid@ice-sf.at>
     2012 Bruno Santos <wyldckat@gmail.com>
 
  SWAK Revision: $Id$
@@ -43,6 +43,8 @@ Contributors/Copyright:
 #include "Random.H"
 
 #include "entryToExpression.H"
+
+#include "dlLibraryTable.H"
 
 namespace Foam {
 
@@ -123,6 +125,13 @@ CommonValueExpressionDriver::CommonValueExpressionDriver(
 
     if(debug) {
         Pout << "CommonValueExpressionDriver::CommonValueExpressionDriver(const dictionary& dict)" << endl;
+    }
+
+    if(dict.found("functionPlugins")) {
+        wordList pluginNames(dict["functionPlugins"]);
+        forAll(pluginNames,i) {
+            dlLibraryTable::open("libswak"+pluginNames[i]+"FunctionPlugin.so");
+        }
     }
 
     if(dict.found("storedVariables")) {

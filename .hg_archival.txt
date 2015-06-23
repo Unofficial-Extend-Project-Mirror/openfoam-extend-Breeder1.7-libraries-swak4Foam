@@ -1,5 +1,6 @@
 repo: d14c0319d52c0f53e65844bba122846744687a4c
-node: 57351f3f59afd2f3df4ea77a5fbef0f1cd011a00
-branch: release/v0.3.1
-latesttag: version_0.3.1
-latesttagdistance: 1
+node: c6d063ac7e4248b99b86be33fc93ddead39400e0
+branch: develop
+latesttag: version_0.3.2
+latesttagdistance: 4
+changessincelatesttag: 4
